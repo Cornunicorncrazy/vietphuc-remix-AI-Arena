@@ -1,4 +1,6 @@
 {
   "version": 2,
+  "installCommand": "npm install",
+  "buildCommand": "node --check server.js",
   "outputDirectory": "train-journey/dist"
 }
