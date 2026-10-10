@@ -2,12 +2,15 @@ const express = require('express');
 const path = require('node:path');
 const fs = require('node:fs');
 const { answer } = require('./train-journey/gemini-qa.cjs');
+const photoboothGenerate = require('./api/photobooth-generate');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
 
 app.use(express.json({ limit: '30kb' }));
+
+app.all('/api/photobooth-generate', photoboothGenerate);
 
 app.post('/api/tet-qa', async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');

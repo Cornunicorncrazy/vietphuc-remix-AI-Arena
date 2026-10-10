@@ -33,6 +33,9 @@ function first(value) {
 function firstFile(files, name) {
   const file = first(files[name]);
   if (!file?.filepath || !file.mimetype) throw new TypeError(`Missing ${name} image`);
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype)) {
+    throw new TypeError(`Invalid ${name} image type`);
+  }
   return file;
 }
 
@@ -71,7 +74,7 @@ module.exports = async function handler(request, response) {
     const invalid = error instanceof TypeError || error?.code === 'ERR_INVALID_ARG_TYPE';
     console.error('Photobooth image generation failed:', error);
     return response.status(invalid ? 400 : 502).json({
-      error: invalid ? 'Invalid image request' : 'Image generation failed'
+      error: invalid ? error.message : `Image generation failed: ${error.message || 'OpenAI returned an error'}`
     });
   }
 };
