@@ -47,7 +47,7 @@
   }
   function showExperienceIntro(n) {
     if (n === cars.length - 1) { open(n); return; }
-    if (n >= 6) return;
+    if (n >= 6) { window.openTrainDestination?.(n); return; }
     if (n > 0 && !window.trainQuizComplete) return;
     if (!overlay.hidden) close();
     if (!experienceOverlay.hidden) closeExperienceIntro();
@@ -109,6 +109,7 @@
     if(!window.trainQuizComplete)return;
     if(n===1){if(!overlay.hidden)close();window.openTrainPhotobooth?.();return;}
     if(n===2){if(!overlay.hidden)close();window.go?.(2);window.openPostalCar?.();return;}
+    if(n >= 6 && n <= 8){window.openTrainDestination?.(n);return;}
     if(n < 3 || n > 5) return;
     current = n;
     ++requestId;
@@ -159,7 +160,7 @@
   }, true);
   cars.forEach((car, n) => {
     car.setAttribute('role', 'button');
-    car.setAttribute('aria-haspopup', n===cars.length-1 || n >= 6 ? 'false' : 'dialog');
+    car.setAttribute('aria-haspopup', n===cars.length-1 ? 'false' : 'dialog');
     car.setAttribute('aria-label', n===0?'Toa đầu tiên; khám phá trang phục phù hợp với bạn':n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; hoàn thành bài khám phá để mở toa`);
     if(n>0 && n!==cars.length-1)car.setAttribute('aria-disabled','true');
     let start, dragged = false;
@@ -180,13 +181,8 @@
   if (hint) hint.textContent = 'Bấm vào toa đầu tiên để khám phá trang phục và mở hành trình';
   window.addEventListener('train-quiz-completed',()=>{
     cars.forEach((car,n)=>{
-      if(n >= 6 && n !== cars.length - 1) {
-        car.setAttribute('aria-disabled','true');
-        car.setAttribute('aria-label',`${car.dataset.carName}; không có trải nghiệm tương tác`);
-      } else {
-        car.removeAttribute('aria-disabled');
-        if(n>0)car.setAttribute('aria-label',n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; bấm để khám phá`);
-      }
+      car.removeAttribute('aria-disabled');
+      if(n>0)car.setAttribute('aria-label',n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; bấm để khám phá`);
     });
     if(hint)hint.textContent='Hành trình đã mở · Bấm vào toa để khám phá';
   });

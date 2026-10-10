@@ -39,23 +39,24 @@
 .postal-transit{margin:60px auto 22px;width:150px;height:150px;display:grid;place-items:center;font-size:90px;animation:postal-fly 1.6s ease-in-out infinite alternate}
 @keyframes postal-fly{from{transform:translateX(-28px) rotate(-10deg)}to{transform:translateX(28px) rotate(9deg)}}
 .postal-paper-wrap{max-width:850px;margin:5px auto;filter:drop-shadow(0 14px 17px rgba(25,22,12,.28))}
-.postal-paper{min-height:1030px;padding:3.9% 3% 4%;background:#e7d2a4 url('postal/newspaper-blank.png') center/100% 100% no-repeat;color:#302219;font-family:Georgia,'Times New Roman',serif}
-.postal-paper-top{display:grid;grid-template-columns:37% 63%;min-height:64%;}
-.postal-paper-side{padding:3% 5% 2% 2%;border-right:1px solid #b83328}
-.postal-paper-side h3{font:bold 23px/1.12 Georgia,serif;color:#8a3024;margin:7px 0}
-.postal-paper-side h4{font:bold 18px/1.12 Georgia,serif;margin:20px 0 6px;border-top:1px solid #9f4937;padding-top:7px}
-.postal-paper-main{padding:1% 4%}
-.postal-paper-edition{text-align:center;letter-spacing:.09em;font-size:11px!important;margin:0 0 7px!important}
-.postal-paper-main h2{text-align:center;margin:0;padding:3px 0 7px;border-top:2px solid #38291d;border-bottom:2px solid #38291d;font:bold clamp(34px,6vw,60px)/1.02 Georgia,serif;font-style:italic}
-.postal-paper-deck{font-weight:bold;text-align:center;border-bottom:1px solid #7c6a4e;padding-bottom:10px}
-.postal-paper-main h3{font:bold 25px/1.1 Georgia,serif;text-align:center;color:#9e3927;margin:11px 0}
-.postal-paper-rubric{font-size:11px!important;font-weight:bold;letter-spacing:.1em;color:#a53427}
-.postal-paper p{font-family:'Be Vietnam Pro',Arial,sans-serif;font-size:clamp(12px,1.5vw,14px);line-height:1.55;margin:8px 0;text-align:left}
+.postal-paper{box-sizing:border-box;padding:clamp(24px,4vw,42px);background-color:#ead6a8;background-image:radial-gradient(circle at 12% 18%,#fff4d499,transparent 32%),radial-gradient(circle at 82% 74%,#a66a2a15,transparent 40%),repeating-linear-gradient(105deg,#ffffff0b 0 2px,#6b451408 3px 5px);border:1px solid #b89b68;color:#302219;font-family:'Be Vietnam Pro',Arial,sans-serif}
+.postal-paper-top{display:grid;grid-template-columns:minmax(0,35%) minmax(0,65%);gap:0}
+.postal-paper-side{min-width:0;padding:0 clamp(14px,2.3vw,24px) 8px 0;border-right:1px solid #b83328}
+.postal-paper-side h3{font:700 clamp(20px,2.4vw,25px)/1.35 'Be Vietnam Pro',Arial,sans-serif;color:#8a3024;margin:8px 0 12px}
+.postal-paper-side h4{font:700 17px/1.4 'Be Vietnam Pro',Arial,sans-serif;margin:22px 0 8px;border-top:1px solid #9f4937;padding-top:12px}
+.postal-paper-main{min-width:0;padding:0 0 0 clamp(14px,2.3vw,24px)}
+.postal-paper-edition{letter-spacing:normal;font-size:11px!important;margin:0 0 10px!important}
+.postal-paper-main h2{margin:0;padding:12px 0 14px;border-top:2px solid #38291d;border-bottom:2px solid #38291d;font:700 clamp(28px,4vw,44px)/1.25 'Be Vietnam Pro',Arial,sans-serif;font-style:italic;text-align:center}
+.postal-paper-deck{font-weight:600;text-align:left;border-bottom:1px solid #7c6a4e;padding-bottom:12px}
+.postal-paper-main h3{font:700 clamp(21px,2.8vw,27px)/1.35 'Be Vietnam Pro',Arial,sans-serif;text-align:center;color:#9e3927;margin:18px 0 12px}
+.postal-paper-rubric{font-size:11px!important;font-weight:bold;letter-spacing:normal;color:#a53427}
+.postal-paper p{font-family:'Be Vietnam Pro',Arial,sans-serif;font-size:14px;line-height:1.75;margin:10px 0;text-align:left}
+.postal-paper :is(h2,h3,h4,p,a){word-break:normal;overflow-wrap:normal;hyphens:none}
 .postal-paper a{color:#73301f;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;font-weight:bold}
 .postal-paper a:focus-visible{outline:2px solid #ba3927;outline-offset:2px}
-.postal-paper-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:20px;padding-top:15px;border-top:2px solid #2d241c}
-.postal-paper-bottom section{padding:0 10px;min-width:0;border-right:1px solid #78654a}
+.postal-paper-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:28px;padding-top:20px;border-top:2px solid #2d241c}
+.postal-paper-bottom section{padding:0 14px;min-width:0;border-right:1px solid #78654a}
 .postal-paper-bottom section:last-child{border:0}
-.postal-paper-bottom h3{font:bold 20px/1.12 Georgia,serif;margin:0 0 8px;text-align:center}
-@media(max-width:650px){.postal-card{max-height:96dvh;border-radius:13px}.postal-header{padding:12px 16px}.postal-header h2{font-size:20px;max-width:300px}.postal-stamps{height:96dvh;border-radius:13px}.postal-envelope{width:calc(100% + 18px);margin-left:-9px}.postal-address{font-size:clamp(7px,1.8vw,11px)}.postal-stamp-spot{font-size:7px}.postal-paper{min-height:0;padding:25px 18px;background-image:linear-gradient(rgba(245,231,199,.87),rgba(245,231,199,.87)),url('postal/newspaper-blank.png');background-size:cover,100% 100%}.postal-paper-top{display:block}.postal-paper-side{border-right:0;border-bottom:1px solid #aa3b29;padding:0 0 10px}.postal-paper-main{padding:13px 0}.postal-paper-bottom{grid-template-columns:1fr;gap:16px}.postal-paper-main h2{font-size:37px}.postal-paper p{font-size:13px}}
+.postal-paper-bottom h3{font:700 18px/1.4 'Be Vietnam Pro',Arial,sans-serif;margin:0 0 10px;text-align:left}
+@media(max-width:700px){.postal-card{max-height:96dvh;border-radius:13px}.postal-header{padding:12px 16px}.postal-header h2{font-size:20px;max-width:300px}.postal-stamps{height:96dvh;border-radius:13px}.postal-envelope{width:calc(100% + 18px);margin-left:-9px}.postal-address{font-size:clamp(7px,1.8vw,11px)}.postal-stamp-spot{font-size:7px}.postal-paper{padding:25px 18px}.postal-paper-top{display:block}.postal-paper-side{border-right:0;border-bottom:1px solid #aa3b29;padding:0 0 16px}.postal-paper-main{padding:20px 0 0}.postal-paper-bottom{grid-template-columns:1fr;gap:18px}.postal-paper-bottom section{padding:0 0 16px;border-right:0;border-bottom:1px solid #78654a}.postal-paper-bottom section:last-child{border-bottom:0}.postal-paper-main h2{font-size:clamp(25px,7vw,37px)}.postal-paper p{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.postal-transit{animation:none}.postal-stamps{transition:none}}

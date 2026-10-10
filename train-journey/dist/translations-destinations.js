@@ -1,0 +1,22 @@
+Object.assign(window.trainTranslations || (window.trainTranslations = {}), {
+  'ĐIỂM DỪNG DI SẢN': 'HERITAGE STOP',
+  'ĐIỂM DỪNG THỦ ĐÔ': 'CAPITAL STOP',
+  'ĐIỂM DỪNG CAO NGUYÊN': 'HIGHLAND STOP',
+  'Tràng An · Ninh Bình': 'Trang An · Ninh Binh',
+  'Hồ Hoàn Kiếm · Hà Nội': 'Hoan Kiem Lake · Hanoi',
+  'Ga Đà Lạt · Lâm Đồng': 'Da Lat Station · Lam Dong',
+  'Ngồi thuyền giữa dòng nước êm, nhìn núi đá vôi và những hang động mở ra trên đường đi. Tràng An là một cách thật chậm để ngắm vẻ đẹp Ninh Bình.': 'Glide along calm water past limestone mountains and caves. A boat ride through Trang An is a gentle way to take in the beauty of Ninh Binh.',
+  'Giữa nhịp phố Hà Nội, mặt hồ và những hàng cây tạo một khoảng lặng. Hãy dạo một vòng quanh hồ để cảm nhận đời sống thường ngày của thủ đô.': 'Amid the bustle of Hanoi, the lake and its tree-lined paths offer a quiet pause. Walk its shoreline to feel the everyday rhythm of the capital.',
+  'Một nhà ga cổ giữa thành phố của đồi thông và tiết trời mát. Từ đây, tiếp tục khám phá hồ Xuân Hương, những vườn hoa và nét kiến trúc riêng của Đà Lạt.': 'A historic station in a city of pine hills and cool air. From here, explore Xuan Huong Lake, flower gardens, and Da Lat’s distinctive architecture.',
+  'Thuyền trên dòng nước giữa núi đá vôi Tràng An, Ninh Bình': 'Boats among the limestone mountains of Trang An, Ninh Binh',
+  'Cảnh hồ Hoàn Kiếm ở trung tâm Hà Nội': 'Hoan Kiem Lake in central Hanoi',
+  'Nhà ga cổ Đà Lạt ở Lâm Đồng': 'Historic Da Lat station in Lam Dong',
+  'Đóng điểm dừng': 'Close stop',
+  'Khám phá thêm ↗': 'Explore more ↗',
+  'Chuyển điểm dừng': 'Switch stops',
+  '← Điểm trước': '← Previous stop',
+  'Điểm tiếp →': 'Next stop →',
+  'Ảnh: Jakub Hałun · Wikimedia Commons · CC BY 4.0': 'Photo: Jakub Hałun · Wikimedia Commons · CC BY 4.0',
+  'Ảnh: Vyacheslav Argenberg · Wikimedia Commons · CC BY 4.0': 'Photo: Vyacheslav Argenberg · Wikimedia Commons · CC BY 4.0',
+  'Ảnh: P. Hughes · Wikimedia Commons · CC BY 4.0': 'Photo: P. Hughes · Wikimedia Commons · CC BY 4.0'
+});

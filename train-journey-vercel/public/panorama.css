@@ -1,0 +1,84 @@
+.scene.has-panorama .sun,
+.scene.has-panorama .landscape,
+.scene.has-panorama .wires,
+.scene.has-panorama .station { display: none; }
+
+.journey:has(.has-panorama) .intro {
+  left: 50%;
+  width: min(770px, calc(100% - 36px));
+  transform: translateX(-50%);
+  padding: 8px 20px 12px;
+  border-radius: 5px;
+  background: rgba(238,237,227,.86);
+  box-shadow: 0 0 28px 20px rgba(238,237,227,.5);
+  backdrop-filter: blur(2px);
+}
+
+.panorama-viewport {
+  position: absolute;
+  z-index: 0;
+  inset: 13% 0 20%;
+  overflow: hidden;
+  pointer-events: none;
+  background: #d1c8aa;
+}
+.panorama-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #eeede3 0%, rgba(238,237,227,.92) 5%, rgba(238,237,227,.45) 16%, transparent 33%, transparent 75%, rgba(238,237,227,.12) 100%);
+  pointer-events: none;
+}
+.panorama-viewport::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(100deg, transparent 12%, rgba(248,246,232,.34) 48%, transparent 78%);
+}
+.panorama-viewport.is-shifting::before { animation: panorama-sweep 850ms ease-out both; }
+.panorama-viewport.is-shifting[data-direction="-1"]::before { animation-name: panorama-sweep-back; }
+.panorama-position {
+  width: max-content;
+  height: 100%;
+  transition: transform 950ms cubic-bezier(.22,.7,.2,1);
+  will-change: transform;
+}
+.panorama-strip {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: panorama-drift 18s ease-in-out infinite alternate;
+  will-change: transform;
+  transition: filter 320ms ease, opacity 320ms ease;
+}
+.panorama-viewport.is-shifting .panorama-strip { filter: blur(4px); opacity: .82; }
+.panorama-strip img {
+  flex: none;
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: none;
+}
+@keyframes panorama-drift { to { transform: translateX(-42px); } }
+@keyframes panorama-sweep {
+  0% { opacity: .8; transform: translateX(-100%); }
+  100% { opacity: 0; transform: translateX(100%); }
+}
+@keyframes panorama-sweep-back {
+  0% { opacity: .8; transform: translateX(100%); }
+  100% { opacity: 0; transform: translateX(-100%); }
+}
+
+@media (max-width: 760px) {
+  .panorama-viewport { inset: 17% 0 25%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panorama-strip { animation: none; transition: none; }
+  .panorama-position { transition: none; }
+  .panorama-viewport.is-shifting .panorama-strip { filter: none; opacity: 1; }
+  .panorama-viewport.is-shifting::before { animation: none; }
+}

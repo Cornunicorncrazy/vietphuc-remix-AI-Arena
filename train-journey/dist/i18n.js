@@ -9,7 +9,7 @@
       const rules=[
         [/^Câu (\d+) \/ (\d+)$/,(_,a,b)=>`Question ${a} / ${b}`],
         [/^(\d+)\. (Frame|Ảnh của bạn|Trang phục|Tạo ảnh|Xếp ảnh)$/,(_,a,b)=>`${a}. ${dictionary[b]||b}`],
-        [/^Ảnh gốc (\d+)$/,(_,n)=>`Original photo ${n}`],[/^Ảnh đã đổi nền (\d+)$/,(_,n)=>`Background-changed photo ${n}`],[/^Ô (\d+)$/,(_,n)=>`Slot ${n}`],[/^Ảnh cho ô (\d+)$/,(_,n)=>`Photo for slot ${n}`],
+        [/^Ảnh gốc (\d+)$/,(_,n)=>`Original photo ${n}`],[/^Ô (\d+)$/,(_,n)=>`Slot ${n}`],[/^Ảnh cho ô (\d+)$/,(_,n)=>`Photo for slot ${n}`],
         [/^Chọn frame (.+)$/,(_,v)=>`Choose frame ${translate(v)}`],[/^Xem mẫu (.+)$/,(_,v)=>`View ${translate(v)}`],[/^Chọn (.+)$/,(_,v)=>`Choose ${translate(v)}`],
         [/^Đến (.+)$/,(_,v)=>`Go to ${translate(v)}`],[/^Ấn để lên (.+)$/,(_,v)=>`Click to board ${translate(v)}`],[/^Xóa (.+)$/,(_,v)=>`Remove ${translate(v)}`],
         [/^Dùng (.+) để thử trang phục$/,(_,v)=>`Use ${translate(v)} for try-on`],

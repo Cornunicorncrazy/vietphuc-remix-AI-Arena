@@ -74,7 +74,6 @@
   journey.append(overlay);
   const body=overlay.querySelector('.booth-body'), status=overlay.querySelector('.booth-status'), steps=overlay.querySelector('.booth-steps');
   let step=0,frame=frames[0],photos=[],outfit=null,sourceId=null,placements=[],stream=null,cameraToken=0,returnFocus,inactive=[],busy=false;
-  let backgroundMode='color',backgroundColor='#e9dfcf',backgroundImageUrl=null,backgroundBusy=false,segmenterPromise=null;
   const titles=['Frame','Ảnh của bạn','Trang phục','Tạo ảnh','Xếp ảnh'];
   const el=(tag,cls,text)=>{const node=document.createElement(tag); if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const button=(text,fn,cls='booth-button')=>{const node=el('button',cls,text);node.type='button';node.addEventListener('click',fn);return node;};
@@ -89,7 +88,7 @@
   function selectedPhoto(){return photos.find(p=>p.id===sourceId);}
   function addPhoto(blob,kind='original'){
     if(photos.length>=12){status.textContent='Bộ ảnh đã có 12 ảnh. Hãy xóa bớt ảnh trước khi thêm.';return;}
-    const name=kind==='generated'?'Ảnh trang phục đã tạo':kind==='background'?`Ảnh đã đổi nền ${photos.filter(p=>p.kind==='background').length+1}`:`Ảnh gốc ${photos.filter(p=>p.kind==='original').length+1}`;
+    const name=kind==='generated'?'Ảnh trang phục đã tạo':`Ảnh gốc ${photos.filter(p=>p.kind==='original').length+1}`;
     const p={id:crypto.randomUUID(),url:URL.createObjectURL(blob),blob,kind,name};photos.push(p);sourceId=p.id;return p;
   }
   async function loadImage(url){const img=new Image();img.src=url;await img.decode();return img;}
@@ -113,62 +112,7 @@
     catch(_){if(token===cameraToken)status.textContent='Không mở được camera. Hãy cho phép camera trong trình duyệt hoặc tải ảnh lên.';}
   }
   function renderPhotos(){
-    const list=el('div','booth-photo-list');photos.forEach(p=>{const card=el('div','booth-photo-card');const choose=button('',()=>{sourceId=p.id;render();});choose.setAttribute('aria-label',`Dùng ${p.name} để thử trang phục`);choose.setAttribute('aria-pressed',String(p.id===sourceId));choose.append(image(p.url,p.name),el('span','',p.name));const remove=button('×',()=>{URL.revokeObjectURL(p.url);photos=photos.filter(item=>item!==p);placements=placements.map(id=>id===p.id?null:id);if(sourceId===p.id)sourceId=photos[0]?.id||null;render();});remove.setAttribute('aria-label',`Xóa ${p.name}`);card.append(choose);if(p.kind==='background'){const download=el('a','booth-photo-download','Tải ảnh đã đổi nền');download.href=p.url;download.download=`viet-phuc-doi-nen-${p.id.slice(0,8)}.png`;card.append(download);}card.append(remove);list.append(card);});return list;
-  }
-  async function getSegmenter(){
-    if(!segmenterPromise)segmenterPromise=(async()=>{
-      const version='1.1.0';
-      const module=await import(`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${version}/vision_bundle.mjs`);
-      const vision=module.default?.ImageSegmenter?module.default:module;
-      const fileset=await vision.FilesetResolver.forVisionTasks(`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${version}/wasm`);
-      return vision.ImageSegmenter.createFromOptions(fileset,{
-        baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/1/selfie_segmenter.tflite',delegate:'CPU'},
-        runningMode:'IMAGE',outputCategoryMask:false,outputConfidenceMasks:true
-      });
-    })().catch(error=>{segmenterPromise=null;throw error;});
-    return segmenterPromise;
-  }
-  async function importBackground(file){
-    if(!file)return;
-    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>12*1024*1024){status.textContent='Ảnh nền phải là JPG, PNG hoặc WebP tối đa 12 MB.';return;}
-    const url=URL.createObjectURL(file);
-    try{const img=await loadImage(url);if(img.width*img.height>50000000)throw Error('Ảnh nền quá lớn.');if(backgroundImageUrl)URL.revokeObjectURL(backgroundImageUrl);backgroundImageUrl=url;backgroundMode='photo';if(!overlay.hidden&&step===1)render();status.textContent='Đã chọn ảnh nền. Nhấn “Tạo ảnh nền mới” để áp dụng.';}
-    catch(error){URL.revokeObjectURL(url);status.textContent=error.message==='Ảnh nền quá lớn.'?error.message:'Không đọc được ảnh nền. Hãy chọn ảnh khác.';}
-  }
-  function renderBackgroundEditor(){
-    const source=selectedPhoto();if(!source)return;
-    const editor=el('section','booth-background-editor');editor.append(el('h4','','Đổi nền ảnh'),note('Chọn màu hoặc tải ảnh nền, sau đó tạo bản ảnh mới. Ảnh gốc vẫn được giữ lại; ảnh được xử lý ngay trên thiết bị của bạn.'));
-    const choices=el('div','booth-background-choices');
-    const colorChoice=el('label','booth-background-color');const colorRadio=el('input');colorRadio.type='radio';colorRadio.name='booth-background-mode';colorRadio.checked=backgroundMode==='color';colorRadio.disabled=backgroundBusy;colorRadio.addEventListener('change',()=>{backgroundMode='color';});
-    const colorInput=el('input');colorInput.type='color';colorInput.value=backgroundColor;colorInput.disabled=backgroundBusy;colorInput.setAttribute('aria-label','Chọn màu nền');colorInput.addEventListener('input',()=>{backgroundColor=colorInput.value;backgroundMode='color';colorRadio.checked=true;});colorChoice.append(colorRadio,el('span','','Màu nền'),colorInput);choices.append(colorChoice);
-    const photoChoice=el('label','booth-upload booth-background-upload','Tải ảnh nền');const photoInput=el('input');photoInput.type='file';photoInput.accept='image/jpeg,image/png,image/webp';photoInput.disabled=backgroundBusy;photoInput.setAttribute('aria-label','Tải ảnh nền');photoInput.addEventListener('change',()=>{importBackground(photoInput.files[0]);photoInput.value='';});photoChoice.append(photoInput);choices.append(photoChoice);
-    if(backgroundImageUrl){const usePhoto=button('Dùng ảnh nền đã tải',()=>{backgroundMode='photo';render();},'booth-button secondary');usePhoto.disabled=backgroundBusy;usePhoto.setAttribute('aria-pressed',String(backgroundMode==='photo'));choices.append(usePhoto);const thumb=image(backgroundImageUrl,'Ảnh nền đã tải');thumb.className='booth-background-thumb';choices.append(thumb);}
-    editor.append(choices);const apply=button(backgroundBusy?'Đang đổi nền…':'Tạo ảnh nền mới',applyBackground,'booth-button primary');apply.disabled=backgroundBusy||photos.length>=12;editor.append(apply);if(photos.length>=12)editor.append(note('Bộ ảnh đã có 12 ảnh. Hãy xóa bớt một ảnh trước khi đổi nền.'));body.append(editor);
-  }
-  async function applyBackground(){
-    const source=selectedPhoto();if(!source||backgroundBusy||photos.length>=12)return;
-    if(backgroundMode==='photo'&&!backgroundImageUrl){status.textContent='Hãy tải một ảnh nền trước.';return;}
-    const mode=backgroundMode,color=backgroundColor,backgroundUrl=backgroundImageUrl;
-    backgroundBusy=true;render();status.textContent='Đang tải MediaPipe và tách người khỏi nền…';
-    let result;
-    try{
-      const [segmenter,img,bg]=await Promise.all([getSegmenter(),loadImage(source.url),mode==='photo'?loadImage(backgroundUrl):Promise.resolve(null)]);
-      await new Promise(resolve=>requestAnimationFrame(resolve));
-      result=segmenter.segment(img);
-      const mask=result.confidenceMasks?.[1];if(!mask)throw Error('MediaPipe chưa tìm được vùng người trong ảnh.');
-      const confidence=mask.getAsFloat32Array(),maskCanvas=document.createElement('canvas');maskCanvas.width=mask.width;maskCanvas.height=mask.height;
-      const maskContext=maskCanvas.getContext('2d'),pixels=maskContext.createImageData(mask.width,mask.height);
-      let personPixels=0;for(let i=0;i<confidence.length;i++){if(confidence[i]>.5)personPixels++;pixels.data[i*4+3]=Math.round(Math.max(0,Math.min(1,(confidence[i]-.08)/.84))*255);}
-      if(personPixels<confidence.length*.001)throw Error('MediaPipe chưa tìm được vùng người trong ảnh.');
-      maskContext.putImageData(pixels,0,0);
-      const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
-      const ctx=c.getContext('2d');if(mode==='color'){ctx.fillStyle=color;ctx.fillRect(0,0,c.width,c.height);}else{const scale=Math.max(c.width/bg.naturalWidth,c.height/bg.naturalHeight);const w=bg.naturalWidth*scale,h=bg.naturalHeight*scale;ctx.drawImage(bg,(c.width-w)/2,(c.height-h)/2,w,h);}
-      const foreground=document.createElement('canvas');foreground.width=c.width;foreground.height=c.height;const fg=foreground.getContext('2d');fg.drawImage(img,0,0);fg.globalCompositeOperation='destination-in';fg.imageSmoothingEnabled=true;fg.imageSmoothingQuality='high';fg.drawImage(maskCanvas,0,0,c.width,c.height);ctx.drawImage(foreground,0,0);
-      const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));if(!blob)throw Error('Không thể tạo ảnh đã đổi nền.');
-      if(!photos.some(p=>p.id===source.id))throw Error('Ảnh gốc đã bị xóa. Hãy chọn ảnh khác.');
-      addPhoto(blob,'background');status.textContent='Đã tạo ảnh nền mới. Ảnh gốc vẫn còn trong bộ ảnh.';
-    }catch(error){status.textContent=error.message?.startsWith('MediaPipe')||error.message?.startsWith('Không thể')||error.message?.startsWith('Ảnh gốc')?error.message:'Không tải hoặc xử lý được MediaPipe. Hãy kiểm tra kết nối rồi thử lại.';}
-    finally{result?.confidenceMasks?.forEach(mask=>mask.close?.());result?.categoryMask?.close?.();backgroundBusy=false;if(!overlay.hidden&&step===1)render();}
+    const list=el('div','booth-photo-list');photos.forEach(p=>{const card=el('div','booth-photo-card');const choose=button('',()=>{sourceId=p.id;render();});choose.setAttribute('aria-label',`Dùng ${p.name} để thử trang phục`);choose.setAttribute('aria-pressed',String(p.id===sourceId));choose.append(image(p.url,p.name),el('span','',p.name));const remove=button('×',()=>{URL.revokeObjectURL(p.url);photos=photos.filter(item=>item!==p);placements=placements.map(id=>id===p.id?null:id);if(sourceId===p.id)sourceId=photos[0]?.id||null;render();});remove.setAttribute('aria-label',`Xóa ${p.name}`);card.append(choose,remove);list.append(card);});return list;
   }
   function renderCatalogue(){
     const filters=el('div','booth-filters');let group='all';const list=el('div','booth-catalogue');
@@ -211,7 +155,7 @@
     if(outfit?.variantId&&!window.clothingQuizVisibleVariants(outfit.id,window.clothingQuizGender||'other').some(variant=>variant.id===outfit.variantId)){outfit=null;if(step===3)step=2;}
     body.replaceChildren();steps.replaceChildren();titles.forEach((title,i)=>{const item=el('li','',`${i+1}. ${title}`);if(i===step)item.setAttribute('aria-current','step');steps.append(item);});
     if(step===0){heading('Chọn một khung kỷ niệm','Các frame dưới đây là mẫu giữ chỗ. Frame thiết kế riêng sẽ được bổ sung sau.');const list=el('div','booth-frame-list');frames.forEach(f=>{const card=button('',()=>{if(frame.id!==f.id)placements=[];frame=f;render();});card.className='booth-frame-option';card.setAttribute('aria-label',`Chọn frame ${f.name}`);card.setAttribute('aria-pressed',String(frame.id===f.id));card.append(miniature(f),el('strong','',f.name),el('span','',f.label));list.append(card);});body.append(list);nav('Tiếp tục →',()=>changeStep(1));}
-    if(step===1){heading('Giữ lại một khoảnh khắc','Chọn một ảnh rõ mặt và trang phục hiện tại. Bạn có thể thêm nhiều ảnh để xếp vào frame.');const actions=el('div','booth-source-actions');actions.append(button('Mở camera',startCamera,'booth-button primary'),uploadControl('Tải ảnh lên'));body.append(actions,note('JPG, PNG hoặc WebP · tối đa 12 MB / ảnh · tối đa 12 ảnh. Ảnh được giữ trong phiên này; chỉ gửi để tạo ảnh khi bạn xác nhận.'),el('div','booth-camera'));if(photos.length){body.append(renderPhotos());renderBackgroundEditor();}nav('Chọn trang phục →',()=>changeStep(2),!selectedPhoto());}
+    if(step===1){heading('Giữ lại một khoảnh khắc','Chọn một ảnh rõ mặt và trang phục hiện tại. Bạn có thể thêm nhiều ảnh để xếp vào frame.');const actions=el('div','booth-source-actions');actions.append(button('Mở camera',startCamera,'booth-button primary'),uploadControl('Tải ảnh lên'));body.append(actions,note('JPG, PNG hoặc WebP · tối đa 12 MB / ảnh · tối đa 12 ảnh. Ảnh được giữ trong phiên này; chỉ gửi để tạo ảnh khi bạn xác nhận.'),el('div','booth-camera'));if(photos.length){body.append(renderPhotos());}nav('Chọn trang phục →',()=>changeStep(2),!selectedPhoto());}
     if(step===2){heading('Một catalogue, nhiều nét đẹp','Chọn mẫu trang phục dựng lại từ ảnh bạn gửi. Một số chi tiết có thể khác ảnh gốc.');renderCatalogue();nav('Xác nhận lựa chọn →',()=>changeStep(3),!outfit);}
     if(step===3){heading('Sẵn sàng cho một diện mạo mới','Ảnh của bạn và mẫu trang phục sẽ được gửi tới dịch vụ tạo ảnh OpenAI khi kết nối đã sẵn sàng và bạn xác nhận.');const summary=el('div','booth-confirmation');const p=selectedPhoto();if(p)summary.append(image(p.url,p.name));const detail=el('div');if(outfit?.imageSrc){const garment=image(outfit.imageSrc,outfit.name);garment.className='booth-selected-garment';detail.append(garment);}detail.append(el('h4','',outfit?.name||''),note(outfit?.description||''),note(`Frame: ${frame.name} · ${frame.slots.length} ô ảnh`));summary.append(detail);body.append(summary);const ready=!!window.photoboothConfig?.generationEndpoint&&!!outfit?.imageSrc;body.append(note(ready?'Tạo một ảnh mỗi lần. Bạn có thể quay lại để thử thêm trang phục.':outfit?.imageSrc?'Đang chờ kết nối API OpenAI. Chưa có ảnh AI nào được tạo.':'Đang chờ API OpenAI và ảnh trang phục thật. Chưa có ảnh AI nào được tạo.'));const create=button(busy?'Đang tạo ảnh…':ready?'Xác nhận và tạo ảnh':outfit?.imageSrc?'Tạo ảnh · Chờ kết nối API':'Tạo ảnh · Chờ ảnh trang phục',generate,'booth-button primary');create.disabled=busy||!ready;body.append(create,button('Thử xếp ảnh gốc vào frame',()=>changeStep(4),'booth-button secondary'));body.append(button('← Quay lại ảnh của bạn',()=>changeStep(1),'booth-button secondary'),button('← Chọn lại trang phục',()=>changeStep(2),'booth-button secondary'));}
     if(step===4){heading('Xếp những khoảnh khắc của bạn','Chọn ảnh cho từng ô, xem trước rồi tải frame về. Những ảnh gốc và ảnh AI được ghi nhãn riêng.');renderComposition();}

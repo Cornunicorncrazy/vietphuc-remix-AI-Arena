@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1560" role="img" aria-labelledby="title desc">
+<title id="title">Bản đồ logic câu hỏi toa 01</title>
+<desc id="desc">Người dùng chọn giới tính và bộ câu hỏi nhanh 5 câu hoặc chi tiết 13 câu, trả lời từng câu, tính điểm trọng số, lọc ảnh mẫu và xem gợi ý.</desc>
+<defs><style>
+text{font-family:Arial,'Segoe UI',sans-serif;fill:#193a32} .title{font-size:48px;font-weight:700}.sub{font-size:24px}.head{font-size:27px;font-weight:700}.body{font-size:22px}.small{font-size:19px}.box{fill:#fffdf7;stroke:#8da79b;stroke-width:2}.accent{fill:#e8eee4;stroke:#496b5e;stroke-width:2}.warm{fill:#f4e8d8;stroke:#aa784b;stroke-width:2}.line{stroke:#496b5e;stroke-width:3;fill:none;marker-end:url(#arrow)}
+</style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#496b5e" stroke-width="2"/></marker></defs>
+<rect width="1600" height="1560" fill="#f5f2e9"/>
+<text class="title" x="70" y="85">TOA 01 · BẢN ĐỒ LOGIC CÂU HỎI</text>
+<text class="sub" x="70" y="125">Khám phá gu thẩm mỹ Việt phục · logic thực tế trong clothing-quiz.js</text>
+<rect class="accent" x="70" y="165" width="1460" height="100" rx="20"/><text class="head" x="100" y="205">Bắt đầu</text><text class="body" x="100" y="239">Chọn giới tính ảnh mẫu: Nữ / Nam / Khác (hiện tất cả). Lựa chọn này không cộng điểm.</text>
+<path class="line" d="M800 265 V315"/>
+<rect class="box" x="70" y="315" width="700" height="180" rx="20"/><text class="head" x="100" y="358">Bộ nhanh · 5 câu</text><text class="body" x="100" y="395">Q1 Ấn tượng đầu tiên · Q2 Phom dáng</text><text class="body" x="100" y="428">Q3 Bảng màu · Q4 Chi tiết</text><text class="body" x="100" y="461">Q5 Cảm giác khi chụp ảnh</text>
+<rect class="box" x="830" y="315" width="700" height="180" rx="20"/><text class="head" x="860" y="358">Bộ chi tiết · 13 câu</text><text class="body" x="860" y="395">Q1–Q5 như bộ nhanh, rồi thêm Q6–Q13.</text><text class="body" x="860" y="428">Bổ sung lựa chọn về phụ kiện, chất liệu,</text><text class="body" x="860" y="461">cổ áo, thân áo, phần dưới và hoàn cảnh mặc.</text>
+<path class="line" d="M420 495 V550 H800 V595"/><path class="line" d="M1180 495 V550 H800 V595"/>
+<rect class="accent" x="70" y="595" width="1460" height="170" rx="20"/><text class="head" x="100" y="637">Mỗi câu chọn một trong bốn đáp án A–D</text><text class="body" x="100" y="680">Mỗi đáp án gán trọng số 1–3 cho một hoặc nhiều nhóm trang phục; có thể quay lại đổi lựa chọn.</text><text class="body" x="100" y="719">Điểm được tính lại từ toàn bộ đáp án đang chọn; nút “Tiếp” chỉ mở sau khi đã chọn.</text>
+<path class="line" d="M800 765 V810"/>
+<rect class="warm" x="70" y="810" width="1460" height="145" rx="20"/><text class="head" x="100" y="852">Đã trả lời đủ 5 hoặc 13 câu?</text><text class="body" x="100" y="892">Chưa đủ → tiếp tục hoặc quay lại sửa. Đủ → cộng điểm từng nhóm:</text><text class="body" x="100" y="929">điểm nhóm += trọng số của đáp án / √(số nhóm được đáp án đó gợi ý).</text>
+<path class="line" d="M800 955 V1005"/>
+<rect class="box" x="70" y="1005" width="1460" height="185" rx="20"/><text class="head" x="100" y="1048">Xếp hạng tám nhóm trang phục</text><text class="body" x="100" y="1090">Giao lĩnh · Nhật Bình · Ngũ thân · Bà ba · H’Mông · Dao đỏ · Thái · Ê Đê</text><text class="body" x="100" y="1130">Sắp theo điểm giảm dần → số câu khớp → thứ tự nhóm. Chỉ giữ nhóm có ảnh mẫu phù hợp</text><text class="body" x="100" y="1165">với lựa chọn giới tính; “Khác” cho xem tất cả. Không có lựa chọn áo dài.</text>
+<path class="line" d="M800 1190 V1240"/>
+<rect class="accent" x="70" y="1240" width="1460" height="205" rx="20"/><text class="head" x="100" y="1284">Kết quả và tiếp tục hành trình</text><text class="body" x="100" y="1325">Gợi ý cao nhất + mô tả, đặc điểm và thư viện ảnh mẫu. Tối đa ba gợi ý gần điểm nhất</text><text class="body" x="100" y="1362">nếu chênh lệch ≤ max(1,5 điểm; 22% điểm cao nhất). Bấm gợi ý khác để xem ảnh.</text><text class="body" x="100" y="1399">Hiển thị kết quả → phát sự kiện hoàn thành → mở các toa tiếp theo.</text>
+<text class="small" x="70" y="1500">Đây là bài gợi ý theo sở thích thẩm mỹ, không đánh giá tính cách hay bản sắc cộng đồng.</text>
+</svg>
