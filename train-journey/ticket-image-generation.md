@@ -1,0 +1,11 @@
+# Generated ticket asset
+
+Tool: built-in image_gen, reference-based edit, transparent background.
+
+Reference: codex-clipboard-14c967f3-e6d5-42f4-8576-076e3517a25c.png.
+
+Asset: dist/ticket-generated-v1.png (2032 × 774 pixels).
+
+## Final prompt
+
+Use case: text-localization / precise-object-edit. Create a production website bitmap asset from the attached archival Vietnamese train tickets. Use ONLY THE UPPER SINGLE TICKET, not the two-ticket sheet. Preserve its original scanned photographic appearance extremely faithfully: worn thin peach/ochre paper, uneven faded ink, creases, stains, chipped/torn edges, old serif Vietnamese letterpress lettering, handwritten blue-pencil numbers, faded red rectangular cancellation stamp and the original winged railway emblem. Do not redraw as clean vector graphics, do not modernize. A single flat front-on ticket filling a very wide landscape canvas approximately 3.6:1, with transparent background tightly around the ticket edges; no table, props, mockup, perspective, or large margins. Keep the ENTIRE LEFT HALF exactly like the source, including original 'HÀNH KHÁCH ĐI TÀU CẦN BIẾT:' rules and purple crossed-out lines; do not rewrite or summarize any notes. Preserve the original right-half table topology and exact Vietnamese field labels, same sizes and locations: middle column ĐƯỜNG SẮT VIỆT NAM, Ga đi / Ga đến side by side, Giá vé (ghế), Số tàu, Số toa, Số ghế, Ngày, giờ chạy; right column emblem and A11—C, VÉ HÀNH KHÁCH, large train name, Họ, tên HK, Số CMT, Người và nơi bán vé / Người phụ trách toa, Ngày tháng. Change only the stamped departure station HÀ NỘI and arrival station DIÊU TRÌ to 'VIỆT NAM' in both cells, matching original red ink. Change the big red train name 'TÀU THỐNG NHẤT' to exact 'TÀU VIỆT PHỤC', matching the original old printing. In Số tàu row replace THỐNG NHẤT with VIỆT PHỤC but preserve TBN 9. Leave Họ, tên HK row blank AFTER its label (no placeholder, no printed passenger name), and ensure the cancellation stamp does not cover that blank name field. Keep all other original printed labels, handwriting, notes and details unchanged. This is a historically styled souvenir website asset, not a new modern design.

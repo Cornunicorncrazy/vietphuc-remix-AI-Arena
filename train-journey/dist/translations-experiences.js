@@ -1,0 +1,18 @@
+Object.assign(window.trainTranslations || (window.trainTranslations = {}), {
+  'TRƯỚC KHI BẮT ĐẦU': 'BEFORE YOU BEGIN',
+  'Đóng giới thiệu hoạt động': 'Close activity introduction',
+  'Để sau': 'Maybe later',
+  'Tiếp tục khám phá →': 'Continue exploring →',
+  'Khám phá phong cách trang phục': 'Discover your clothing style',
+  'Trả lời 9 câu hỏi về sở thích để nhận một gợi ý trang phục và mở hành trình qua các toa.': 'Answer nine questions about your preferences to get an outfit suggestion and unlock the journey.',
+  'Chụp ảnh cùng Việt phục': 'Take photos with Việt phục',
+  'Chọn khung hình, thêm ảnh của bạn và chọn một mẫu trang phục để tạo kỷ niệm trong photobooth.': 'Choose a frame, add your photo, and select an outfit for a keepsake in the photobooth.',
+  'Gửi thư từ toa bưu điện': 'Send a letter from the postal carriage',
+  'Chọn tem, viết lời chào và lưu lại một tấm thư kỷ niệm từ chuyến tàu Việt phục.': 'Choose a stamp, write a greeting, and keep a souvenir letter from the Việt phục train.',
+  'Ngắm tranh Tết, hỏi đáp trang phục': 'Explore Tết art and clothing questions',
+  'Ngắm không gian toa tranh Tết rồi chọn câu hỏi gợi ý để tìm hiểu trang phục truyền thống.': 'Explore the Tết art carriage and choose a suggested question about traditional clothing.',
+  'Việt phục qua các thời kỳ · Khởi nguồn': 'Vietnamese clothing through the ages · Origins',
+  'Khám phá các dấu tích trang phục từ Đông Sơn đến thời Hậu Lê qua dòng thời gian và tư liệu.': 'Explore clothing from Đông Sơn through the Later Lê period using a timeline and source material.',
+  'Việt phục qua các thời kỳ · Tiếp nối': 'Vietnamese clothing through the ages · Continuity',
+  'Theo dõi những biến đổi từ áo ngũ thân đến hiện đại qua dòng thời gian và tư liệu.': 'Follow changes from the ngũ thân robe to modern clothing through a timeline and source material.',
+});

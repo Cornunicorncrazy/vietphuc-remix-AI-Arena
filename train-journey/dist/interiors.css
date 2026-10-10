@@ -1,0 +1,76 @@
+.train-car { cursor: pointer; }
+.train-car[aria-disabled="true"] { opacity: .52; cursor: not-allowed; }
+.navigation button:disabled { cursor: not-allowed; }
+.experience-overlay[hidden] { display: none; }
+.experience-overlay {
+  position: absolute; inset: 0; z-index: 130; display: grid; place-items: center;
+  padding: 20px; background: rgba(24, 39, 34, .64); backdrop-filter: blur(6px);
+}
+.experience-card {
+  position: relative; width: min(440px, 100%); padding: 28px;
+  background: #f3efe3; color: #253c35; border: 1px solid #c5b895;
+  border-radius: 14px; box-shadow: 0 24px 70px #10231b66;
+  animation: interior-arrival .25s ease-out;
+}
+.experience-kicker { color: #986441; font: 700 10px 'Be Vietnam Pro', sans-serif; letter-spacing: 1.8px; }
+.experience-close {
+  position: absolute; top: 15px; right: 15px; width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border: 1px solid #7e8b7966; border-radius: 50%; background: transparent;
+  color: inherit; cursor: pointer;
+}
+.experience-card h2 { margin: 16px 30px 10px 0; font: 400 clamp(24px, 4vw, 32px) Georgia, serif; }
+.experience-card p { margin: 0; font: 13px/1.7 'Be Vietnam Pro', sans-serif; color: #596a5f; }
+.experience-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+.experience-actions button {
+  padding: 11px 15px; border: 1px solid #80917b66; border-radius: 5px;
+  background: transparent; color: #354b3e; font: 600 12px 'Be Vietnam Pro', sans-serif; cursor: pointer;
+}
+.experience-actions .experience-continue { border-color: #354b3e; background: #354b3e; color: #f6f0dc; }
+.experience-actions button:hover, .experience-close:hover { filter: brightness(.93); }
+.experience-actions button:focus-visible, .experience-close:focus-visible { outline: 3px solid #b87948; outline-offset: 3px; }
+.interior-overlay[hidden] { display: none; }
+.interior-overlay {
+  position: absolute; inset: 0; z-index: 130; display: grid; place-items: center;
+  padding: 20px; background: rgba(24, 39, 34, .74); backdrop-filter: blur(7px);
+}
+.interior-card {
+  width: min(1100px, 100%); max-height: 100%; overflow: auto;
+  background: #f3efe3; color: #253c35; border: 1px solid #c5b895;
+  border-radius: 12px; box-shadow: 0 24px 70px #10231b66;
+  animation: interior-arrival .25s ease-out;
+}
+.interior-header { height: auto; padding: 18px 24px 8px; gap: 20px; }
+.interior-kicker { font-size: 9px; letter-spacing: 2px; color: #986441; }
+.interior-header h2 { font: 400 clamp(22px, 2.5vw, 32px) Georgia, serif; margin: 5px 0; }
+.interior-close {
+  display: grid; place-items: center; flex: none; width: 40px; height: 40px;
+  border: 1px solid #7e8b7966; border-radius: 50%; color: inherit; background: transparent;
+  cursor: pointer;
+}
+.interior-close:hover { background: #e3dfcd; }
+.interior-description { font-size: 11px; line-height: 1.7; margin: 0 24px 12px; color: #687463; }
+.interior-status { color: #f3efe3; font-size: 13px; padding: 20px; text-align: center; }
+.interior-navigation { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 24px 18px; border-top: 1px solid #cbc8b655; }
+.interior-navigation button { border: 1px solid #80917b66; background: transparent; color: #354b3e; border-radius: 4px; padding: 10px 14px; font: 500 11px 'Be Vietnam Pro', sans-serif; cursor: pointer; }
+.interior-navigation .interior-return { background: #354b3e; color: #f6f0dc; }
+.interior-navigation button:disabled { opacity: .3; cursor: default; }
+@keyframes interior-arrival { from { opacity: 0; transform: translateY(10px); } }
+@media (max-width: 760px) {
+  .experience-card { padding: 22px; }
+  .experience-actions { flex-wrap: wrap; }
+  .interior-overlay { padding: 12px; }
+  .interior-header { padding: 16px 16px 6px; }
+  .interior-description { margin: 0 16px 10px; font-size: 10px; }
+  .interior-navigation { padding: 12px; gap: 6px; }
+  .interior-navigation button { font-size: 9px; padding: 10px 8px; }
+}
+.mobile-landscape .interior-overlay { padding: 8px 18px; }
+.mobile-landscape .interior-header { padding: 8px 14px 4px; height: auto; }
+.mobile-landscape .interior-header h2 { font-size: 19px; }
+.mobile-landscape .interior-kicker { font-size: 6px; }
+.mobile-landscape .interior-close { width: 30px; height: 30px; font-size: 23px; }
+.mobile-landscape .interior-description { display: none; }
+.mobile-landscape .interior-navigation { padding: 6px 14px 8px; }
+.mobile-landscape .interior-navigation button { padding: 6px 10px; font-size: 8px; }
+@media (prefers-reduced-motion: reduce) { .interior-card, .experience-card { animation: none; } }

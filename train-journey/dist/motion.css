@@ -1,0 +1,72 @@
+/* Air and scenery pass behind the carriages, never over the controls. */
+.motion-streaks {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(20% - 14px);
+  /* The SVG carriage is 360 / 1100 wide: allow air above its roof
+     and a small margin below its wheels so motion remains visible. */
+  height: calc(var(--car-width, 100vw) * .327273 + 20px);
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: .72;
+  transition: opacity 240ms ease;
+  --streak-direction: -1;
+}
+.motion-streak {
+  position: absolute;
+  left: 100%;
+  top: var(--streak-top);
+  width: var(--streak-length);
+  height: var(--streak-height, 2px);
+  border-radius: 100%;
+  background: linear-gradient(90deg, transparent, var(--streak-color), transparent);
+  filter: blur(var(--streak-blur, .45px));
+  opacity: 0;
+  animation: passing-streak var(--streak-time) linear var(--streak-delay) infinite;
+}
+.motion-streaks.is-shifting { opacity: .95; }
+.motion-streaks.is-shifting .motion-streak { animation-duration: 1.2s; }
+.motion-streaks[data-direction="-1"] { --streak-direction: -1; }
+@keyframes passing-streak {
+  0% { opacity: 0; transform: translateX(calc(var(--view-width, 100vw) * -.12 * var(--streak-direction))); }
+  14% { opacity: .72; }
+  80% { opacity: .62; }
+  100% { opacity: 0; transform: translateX(calc(var(--view-width, 100vw) * 1.6 * var(--streak-direction))); }
+}
+.motion-streaks[data-direction="-1"] .motion-streak { left: 100%; }
+
+/* The camera follows the train, so sleepers and ballast pass from right to left. */
+.rails {
+  background-size: 100px 100%;
+  animation: rail-travel 1.1s linear infinite;
+  will-change: background-position;
+}
+.rail-bed {
+  background-image:
+    radial-gradient(ellipse 3px 2px at 12px 6px, #373f38a8 98%, transparent),
+    radial-gradient(ellipse 4px 2px at 37px 13px, #b1b6a264 98%, transparent),
+    linear-gradient(#697367, #62695d);
+  background-size: 52px 18px, 71px 22px, 100% 100%;
+  animation: ballast-travel 1.1s linear infinite;
+  will-change: background-position;
+}
+@keyframes rail-travel {
+  to { background-position: -100px 0; }
+}
+@keyframes ballast-travel {
+  to { background-position: -52px 0, -71px 0, 0 0; }
+}
+@media (max-width: 760px) {
+  .motion-streaks { bottom: calc(28% - 14px); }
+}
+.mobile-landscape .motion-streaks {
+  bottom: 64px;
+  height: calc(var(--car-width) * .327273 + 16px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-streaks { display: none; transition: none; }
+  .motion-streak { animation: none; }
+  .rails, .rail-bed { animation: none; }
+}
+
