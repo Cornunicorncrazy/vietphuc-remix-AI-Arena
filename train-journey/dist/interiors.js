@@ -34,31 +34,39 @@
     {title:'Khám phá phong cách trang phục', description:'Trả lời 9 câu hỏi về sở thích để nhận một gợi ý trang phục và mở hành trình qua các toa.'},
     {title:'Chụp ảnh cùng Việt phục', description:'Chọn khung hình, thêm ảnh của bạn và chọn một mẫu trang phục để tạo kỷ niệm trong photobooth.'},
     {title:'Gửi thư từ toa bưu điện', description:'Chọn tem, viết lời chào và lưu lại một tấm thư kỷ niệm từ chuyến tàu Việt phục.'},
-    {title:'Hỏi đáp trang phục', description:'Chọn câu hỏi gợi ý để tìm hiểu trang phục truyền thống.'},
+    {title:'Hỏi đáp trang phục', description:'Chọn câu hỏi gợi ý để tìm hiểu trang phục truyền thống cùng trợ lý Gemini.'},
     {title:'Việt phục qua các thời kỳ · Khởi nguồn', description:'Khám phá các dấu tích trang phục từ Đông Sơn đến thời Hậu Lê qua dòng thời gian và tư liệu.'},
-    {title:'Việt phục qua các thời kỳ · Tiếp nối', description:'Theo dõi những biến đổi từ áo ngũ thân đến hiện đại qua dòng thời gian và tư liệu.'}
+    {title:'Việt phục qua các thời kỳ · Tiếp nối', description:'Theo dõi những biến đổi từ áo ngũ thân đến hiện đại qua dòng thời gian và tư liệu.'},
+    {title:'Tràng An · Ninh Bình', description:'Khám phá núi đá vôi, hang động và dòng nước của quần thể danh thắng Tràng An.'},
+    {title:'Hồ Hoàn Kiếm · Hà Nội', description:'Ngắm không gian hồ, Tháp Rùa và nhịp sống giữa lòng Hà Nội.'},
+    {title:'Ga Đà Lạt · Lâm Đồng', description:'Tìm hiểu nhà ga cổ và khung cảnh cao nguyên Đà Lạt.'}
   ];
   function closeExperienceIntro() {
     if (experienceOverlay.hidden) return;
     experienceOverlay.hidden = true;
-    experienceInactive.forEach(({child, inert}) => { child.inert = inert; });
+    experienceOverlay.setAttribute('hidden', '');
+    experienceOverlay.style.display = 'none';
+    try {
+      experienceInactive.forEach(({child, inert}) => { if (child) child.inert = !!inert; });
+    } catch (_) {}
     pendingExperience = null;
-    experienceReturnFocus?.focus({preventScroll: true});
+    try { experienceReturnFocus?.focus?.({preventScroll: true}); } catch (_) {}
   }
   function showExperienceIntro(n) {
     if (n === cars.length - 1) { open(n); return; }
-    if (n >= 6) { window.openTrainDestination?.(n); return; }
     if (n > 0 && !window.trainQuizComplete) return;
     if (!overlay.hidden) close();
     if (!experienceOverlay.hidden) closeExperienceIntro();
     pendingExperience = n;
     experienceReturnFocus = document.activeElement;
-    experienceTitle.textContent = experienceDetails[n].title;
-    experienceDescription.textContent = experienceDetails[n].description;
+    experienceTitle.textContent = (experienceDetails[n]?.title || cars[n]?.dataset?.carName || '').normalize('NFC');
+    experienceDescription.textContent = experienceDetails[n]?.description || '';
     experienceInactive = [...journey.children].filter(child => child !== experienceOverlay).map(child => ({child, inert: child.inert}));
     experienceInactive.forEach(({child}) => { child.inert = true; });
     experienceOverlay.inert = false;
     experienceOverlay.hidden = false;
+    experienceOverlay.removeAttribute('hidden');
+    experienceOverlay.style.display = '';
     experienceContinue.focus({preventScroll: true});
   }
   experienceContinue.addEventListener('click', () => {
@@ -101,7 +109,7 @@
     if(n===cars.length-1){
       if(!overlay.hidden)close();
       if(window.trainQuizComplete)window.go?.(n);
-      cars[n].focus({preventScroll:true});
+      cars[n]?.focus?.({preventScroll:true});
       const played=await window.playTrainHorn?.();
       if(!played){const hint=document.querySelector('.hint small');if(hint)hint.textContent='Bật âm thanh để nghe còi tàu';}
       return;
@@ -117,12 +125,16 @@
       returnFocus = document.activeElement;
       inactiveChildren = [...journey.children].filter(child => child !== overlay).map(child => ({child, inert: child.inert}));
       inactiveChildren.forEach(({child}) => { child.inert = true; });
+      overlay.inert = false;
       overlay.hidden = false;
+      overlay.removeAttribute('hidden');
+      overlay.style.display = '';
       document.body.classList.add('interior-open');
       closeButton.focus({preventScroll: true});
     }
     window.go?.(n);
-    title.textContent = historyMeta[n]?.title || cars[n].dataset.carName;
+    const resolvedTitle = historyMeta[n]?.title || experienceDetails[n]?.title || cars[n]?.dataset?.carName || '';
+    title.textContent = resolvedTitle.normalize('NFC');
     description.textContent = experienceDetails[n]?.description || historyMeta[n]?.description || '';
     status.hidden = true;
     tetHost.hidden = n !== 3;
@@ -135,12 +147,29 @@
   function close() {
     ++requestId;
     overlay.hidden = true;
+    overlay.setAttribute('hidden', '');
+    overlay.style.display = 'none';
     document.body.classList.remove('interior-open');
-    inactiveChildren.forEach(({child, inert}) => { child.inert = inert; });
-    (cars[current] || returnFocus).focus({preventScroll: true});
+    try {
+      inactiveChildren.forEach(({child, inert}) => { if (child) child.inert = !!inert; });
+    } catch (_) {}
+    try {
+      (cars[current] || returnFocus)?.focus?.({preventScroll: true});
+    } catch (_) {}
   }
-  closeButton.addEventListener('click', close);
-  overlay.querySelector('.interior-return').addEventListener('click', close);
+  window.closeInteriorOverlay = close;
+  const handleClose = event => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    close();
+  };
+  closeButton.addEventListener('click', handleClose);
+  overlay.querySelector('.interior-return').addEventListener('click', event => {
+    event.preventDefault();
+    close();
+  });
   previous.addEventListener('click', () => showExperienceIntro(current - 1));
   next.addEventListener('click', () => showExperienceIntro(current + 1));
   overlay.addEventListener('click', event => { if (event.target === overlay) close(); });

@@ -50,6 +50,7 @@ Object.assign(window.trainTranslations || (window.trainTranslations = {}), {
   'Bạn muốn xem mẫu trang phục theo giới tính nào?': 'Which outfit models would you like to see?',
   'Nữ': 'Women',
   'Nam': 'Men',
+  'Khác': 'Other',
   'Khác · xem tất cả': 'Other · show all',
   'Bạn muốn trả lời bao nhiêu câu?': 'How many questions would you like to answer?',
   'Bộ câu hỏi nhanh · 5 câu': 'Quick set · 5 questions',
