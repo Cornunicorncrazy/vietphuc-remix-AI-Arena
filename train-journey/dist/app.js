@@ -48,6 +48,23 @@ scene.addEventListener('touchend',e=>{
 },{passive:true});
 scene.addEventListener('touchcancel',()=>{touchStart=null},{passive:true});
 go(0);
+const brand=document.querySelector('.brand');
+if(brand){
+  brand.addEventListener('click',e=>{
+    e.preventDefault();
+    if(typeof window.closeInteriorOverlay==='function')window.closeInteriorOverlay();
+    document.querySelectorAll('.experience-overlay:not([hidden]),.interior-overlay:not([hidden]),.clothing-quiz-overlay:not([hidden]),.booth-overlay:not([hidden]),.postal-overlay:not([hidden])').forEach(el=>{
+      const closeBtn=el.querySelector('.interior-close, .booth-close, .clothing-quiz-close, .postal-close, .experience-close, button[aria-label*="Đóng"], button[aria-label*="Close"], .overlay-close');
+      if(closeBtn)closeBtn.click();
+      else {
+        el.hidden=true;
+        el.setAttribute('hidden','');
+        el.style.display='none';
+      }
+    });
+    go(0);
+  });
+}
 const intro=document.querySelector('.intro');
 const journeyTitle=document.querySelector('#journey-title');
 const hoverTitle=journeyTitle?.querySelector('.journey-title-hover');

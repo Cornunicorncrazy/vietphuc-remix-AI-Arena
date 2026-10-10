@@ -29,27 +29,51 @@
 .experience-actions .experience-continue { border-color: #354b3e; background: #354b3e; color: #f6f0dc; }
 .experience-actions button:hover, .experience-close:hover { filter: brightness(.93); }
 .experience-actions button:focus-visible, .experience-close:focus-visible { outline: 3px solid #b87948; outline-offset: 3px; }
-.interior-overlay[hidden] { display: none; }
+.interior-overlay[hidden] { display: none !important; }
 .interior-overlay {
   position: absolute; inset: 0; z-index: 130; display: grid; place-items: center;
   padding: 20px; background: rgba(24, 39, 34, .74); backdrop-filter: blur(7px);
 }
 .interior-card {
+  position: relative;
   width: min(1100px, 100%); max-height: 100%; overflow: auto;
   background: #f3efe3; color: #253c35; border: 1px solid #c5b895;
   border-radius: 12px; box-shadow: 0 24px 70px #10231b66;
   animation: interior-arrival .25s ease-out;
 }
-.interior-header { height: auto; padding: 18px 24px 8px; gap: 20px; }
-.interior-kicker { font-size: 9px; letter-spacing: 2px; color: #986441; }
-.interior-header h2 { font: 400 clamp(22px, 2.5vw, 32px) Georgia, serif; margin: 5px 0; }
-.interior-close {
-  display: grid; place-items: center; flex: none; width: 40px; height: 40px;
-  border: 1px solid #7e8b7966; border-radius: 50%; color: inherit; background: transparent;
-  cursor: pointer;
+.interior-header {
+  position: relative;
+  z-index: 10;
+  height: auto;
+  padding: 18px 24px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #cbc8b655;
 }
-.interior-close:hover { background: #e3dfcd; }
-.interior-description { font-size: 11px; line-height: 1.7; margin: 0 24px 12px; color: #687463; }
+.interior-header > div { flex: 1; min-width: 0; }
+.interior-kicker { font-size: 9px; letter-spacing: 2px; color: #986441; }
+.interior-header h2 { font-family: 'Playfair Display', 'Be Vietnam Pro', Georgia, serif; font-size: clamp(22px, 2.5vw, 32px); font-weight: 500; margin: 4px 0 0; }
+.interior-close {
+  flex: none;
+  position: static;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #7e8b7966;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s, transform 0.2s;
+}
+.interior-close svg { pointer-events: none; }
+.interior-close:hover { background: #e3dfcd; transform: scale(1.05); }
+.interior-description { font-size: 11px; line-height: 1.7; margin: 10px 24px 12px; color: #687463; }
 .interior-status { color: #f3efe3; font-size: 13px; padding: 20px; text-align: center; }
 .interior-navigation { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 24px 18px; border-top: 1px solid #cbc8b655; }
 .interior-navigation button { border: 1px solid #80917b66; background: transparent; color: #354b3e; border-radius: 4px; padding: 10px 14px; font: 500 11px 'Be Vietnam Pro', sans-serif; cursor: pointer; }
@@ -60,8 +84,9 @@
   .experience-card { padding: 22px; }
   .experience-actions { flex-wrap: wrap; }
   .interior-overlay { padding: 12px; }
-  .interior-header { padding: 16px 16px 6px; }
-  .interior-description { margin: 0 16px 10px; font-size: 10px; }
+  .interior-header { padding: 14px 16px 8px; }
+  .interior-close { width: 34px; height: 34px; }
+  .interior-description { margin: 8px 16px 10px; font-size: 10px; }
   .interior-navigation { padding: 12px; gap: 6px; }
   .interior-navigation button { font-size: 9px; padding: 10px 8px; }
 }
@@ -69,7 +94,7 @@
 .mobile-landscape .interior-header { padding: 8px 14px 4px; height: auto; }
 .mobile-landscape .interior-header h2 { font-size: 19px; }
 .mobile-landscape .interior-kicker { font-size: 6px; }
-.mobile-landscape .interior-close { width: 30px; height: 30px; font-size: 23px; }
+.mobile-landscape .interior-close { width: 30px; height: 30px; }
 .mobile-landscape .interior-description { display: none; }
 .mobile-landscape .interior-navigation { padding: 6px 14px 8px; }
 .mobile-landscape .interior-navigation button { padding: 6px 10px; font-size: 8px; }

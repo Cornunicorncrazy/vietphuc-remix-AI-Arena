@@ -1,10 +1,10 @@
 .clothing-quiz-overlay[hidden] { display: none; }
 .clothing-quiz-overlay { position:absolute; inset:0; z-index:130; display:grid; place-items:center; padding:20px; background:#182722ba; backdrop-filter:blur(7px); }
-.clothing-quiz-card { width:min(1000px,100%); max-height:100%; overflow:auto; background:#f3efe3; color:#253c35; border:1px solid #c5b895; border-radius:14px; box-shadow:0 24px 70px #10231b66; animation:clothing-quiz-arrive .25s ease-out; }
-.clothing-quiz-header { display:flex; align-items:center; justify-content:space-between; height:auto; padding:22px 30px 12px; gap:20px; border-bottom:1px solid #cbc8b655; }
+.clothing-quiz-card { position:relative; width:min(1000px,100%); max-height:100%; overflow:auto; background:#f3efe3; color:#253c35; border:1px solid #c5b895; border-radius:14px; box-shadow:0 24px 70px #10231b66; animation:clothing-quiz-arrive .25s ease-out; }
+.clothing-quiz-header { display:flex; align-items:flex-start; justify-content:space-between; height:auto; padding:22px 64px 12px 30px; gap:20px; border-bottom:1px solid #cbc8b655; }
 .clothing-quiz-kicker { font-size:9px; letter-spacing:2px; color:#986441; }
 .clothing-quiz-header h2 { font:400 clamp(23px,3vw,33px) Georgia,serif; margin:7px 0; }
-.clothing-quiz-close { flex:none; width:38px; height:38px; display:grid; place-items:center; border:1px solid #7e8b7966; border-radius:50%; background:transparent; color:inherit; cursor:pointer; }
+.clothing-quiz-close { position:absolute; top:18px; right:20px; flex:none; width:38px; height:38px; display:grid; place-items:center; border:1px solid #7e8b7966; border-radius:50%; background:transparent; color:inherit; cursor:pointer; }
 .clothing-quiz-close:hover { background:#e3dfcd; }
 body.quiz-open .theme-toggle,body.quiz-open .language-switch,body.quiz-open .train-audio-toggle,body.quiz-open .train-sound-panel{display:none}
 .clothing-quiz-body { padding:20px 30px 26px; }

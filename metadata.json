@@ -1,0 +1,7 @@
+{
+  "name": "Vé Tàu Việt Phục — Chuyến tàu Việt Nam",
+  "description": "Ghi tên lên vé Tàu Việt Phục, tải ảnh vé lưu niệm và khám phá đoàn tàu Việt Nam tương tác.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

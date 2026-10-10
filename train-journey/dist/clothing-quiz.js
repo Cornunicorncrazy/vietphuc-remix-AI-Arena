@@ -78,7 +78,7 @@
     const genderField = element('fieldset', 'clothing-quiz-choice-group');
     genderField.append(element('legend', '', 'Bạn muốn xem mẫu trang phục theo giới tính nào?'));
     const genderChoices = element('div', 'clothing-quiz-start-options');
-    [['female', 'Nữ'], ['male', 'Nam'], ['other', 'Khác · xem tất cả']].forEach(([id, label]) => {
+    [['female', 'Nữ'], ['male', 'Nam'], ['other', 'Khác']].forEach(([id, label]) => {
       const option = action(label, 'clothing-quiz-start-option', () => {gender = id; [...genderChoices.children].forEach(item => item.setAttribute('aria-pressed', String(item === option))); start.disabled = !mode;});
       option.setAttribute('aria-pressed', String(gender === id));
       genderChoices.append(option);

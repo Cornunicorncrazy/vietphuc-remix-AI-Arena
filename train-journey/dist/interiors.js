@@ -34,31 +34,39 @@
     {title:'Khám phá phong cách trang phục', description:'Trả lời 9 câu hỏi về sở thích để nhận một gợi ý trang phục và mở hành trình qua các toa.'},
     {title:'Chụp ảnh cùng Việt phục', description:'Chọn khung hình, thêm ảnh của bạn và chọn một mẫu trang phục để tạo kỷ niệm trong photobooth.'},
     {title:'Gửi thư từ toa bưu điện', description:'Chọn tem, viết lời chào và lưu lại một tấm thư kỷ niệm từ chuyến tàu Việt phục.'},
-    {title:'Hỏi đáp trang phục', description:'Chọn câu hỏi gợi ý để tìm hiểu trang phục truyền thống.'},
+    {title:'Hỏi đáp trang phục', description:'Chọn câu hỏi gợi ý để tìm hiểu trang phục truyền thống cùng trợ lý Gemini.'},
     {title:'Việt phục qua các thời kỳ · Khởi nguồn', description:'Khám phá các dấu tích trang phục từ Đông Sơn đến thời Hậu Lê qua dòng thời gian và tư liệu.'},
-    {title:'Việt phục qua các thời kỳ · Tiếp nối', description:'Theo dõi những biến đổi từ áo ngũ thân đến hiện đại qua dòng thời gian và tư liệu.'}
+    {title:'Việt phục qua các thời kỳ · Tiếp nối', description:'Theo dõi những biến đổi từ áo ngũ thân đến hiện đại qua dòng thời gian và tư liệu.'},
+    {title:'Toa Hà Nội hai tầng · The Hanoi Train', description:'Toa xe hai tầng mang hơi thở văn hóa Thủ đô với biểu tượng cửa ô Ô Quan Chưởng và không gian hoài cổ.'},
+    {title:'Toa SJourney · Di sản sang trọng', description:'Toa tàu cao cấp phong cách hoài cổ với sắc đỏ mận, viền hoa văn hoàng gia và không gian trải nghiệm di sản.'},
+    {title:'Toa cổ Đà Lạt · Dalat Plateau Rail Road', description:'Toa xe ốp gỗ cổ điển tuyến đường sắt răng cưa Tháp Chàm - Đà Lạt (toa 4109), lưu dấu ký ức một thời cao nguyên hoa.'}
   ];
   function closeExperienceIntro() {
     if (experienceOverlay.hidden) return;
     experienceOverlay.hidden = true;
-    experienceInactive.forEach(({child, inert}) => { child.inert = inert; });
+    experienceOverlay.setAttribute('hidden', '');
+    experienceOverlay.style.display = 'none';
+    try {
+      experienceInactive.forEach(({child, inert}) => { if (child) child.inert = !!inert; });
+    } catch (_) {}
     pendingExperience = null;
-    experienceReturnFocus?.focus({preventScroll: true});
+    try { experienceReturnFocus?.focus?.({preventScroll: true}); } catch (_) {}
   }
   function showExperienceIntro(n) {
     if (n === cars.length - 1) { open(n); return; }
-    if (n >= 6) return;
     if (n > 0 && !window.trainQuizComplete) return;
     if (!overlay.hidden) close();
     if (!experienceOverlay.hidden) closeExperienceIntro();
     pendingExperience = n;
     experienceReturnFocus = document.activeElement;
-    experienceTitle.textContent = experienceDetails[n].title;
-    experienceDescription.textContent = experienceDetails[n].description;
+    experienceTitle.textContent = (experienceDetails[n]?.title || cars[n]?.dataset?.carName || '').normalize('NFC');
+    experienceDescription.textContent = experienceDetails[n]?.description || '';
     experienceInactive = [...journey.children].filter(child => child !== experienceOverlay).map(child => ({child, inert: child.inert}));
     experienceInactive.forEach(({child}) => { child.inert = true; });
     experienceOverlay.inert = false;
     experienceOverlay.hidden = false;
+    experienceOverlay.removeAttribute('hidden');
+    experienceOverlay.style.display = '';
     experienceContinue.focus({preventScroll: true});
   }
   experienceContinue.addEventListener('click', () => {
@@ -101,7 +109,7 @@
     if(n===cars.length-1){
       if(!overlay.hidden)close();
       if(window.trainQuizComplete)window.go?.(n);
-      cars[n].focus({preventScroll:true});
+      cars[n]?.focus?.({preventScroll:true});
       const played=await window.playTrainHorn?.();
       if(!played){const hint=document.querySelector('.hint small');if(hint)hint.textContent='Bật âm thanh để nghe còi tàu';}
       return;
@@ -109,19 +117,23 @@
     if(!window.trainQuizComplete)return;
     if(n===1){if(!overlay.hidden)close();window.openTrainPhotobooth?.();return;}
     if(n===2){if(!overlay.hidden)close();window.go?.(2);window.openPostalCar?.();return;}
-    if(n < 3 || n > 5) return;
+    if(n < 3 || n > 8) return;
     current = n;
     ++requestId;
     if (overlay.hidden) {
       returnFocus = document.activeElement;
       inactiveChildren = [...journey.children].filter(child => child !== overlay).map(child => ({child, inert: child.inert}));
       inactiveChildren.forEach(({child}) => { child.inert = true; });
+      overlay.inert = false;
       overlay.hidden = false;
+      overlay.removeAttribute('hidden');
+      overlay.style.display = '';
       document.body.classList.add('interior-open');
       closeButton.focus({preventScroll: true});
     }
     window.go?.(n);
-    title.textContent = historyMeta[n]?.title || cars[n].dataset.carName;
+    const resolvedTitle = historyMeta[n]?.title || experienceDetails[n]?.title || cars[n]?.dataset?.carName || '';
+    title.textContent = resolvedTitle.normalize('NFC');
     description.textContent = experienceDetails[n]?.description || historyMeta[n]?.description || '';
     status.hidden = true;
     tetHost.hidden = n !== 3;
@@ -134,12 +146,29 @@
   function close() {
     ++requestId;
     overlay.hidden = true;
+    overlay.setAttribute('hidden', '');
+    overlay.style.display = 'none';
     document.body.classList.remove('interior-open');
-    inactiveChildren.forEach(({child, inert}) => { child.inert = inert; });
-    (cars[current] || returnFocus).focus({preventScroll: true});
+    try {
+      inactiveChildren.forEach(({child, inert}) => { if (child) child.inert = !!inert; });
+    } catch (_) {}
+    try {
+      (cars[current] || returnFocus)?.focus?.({preventScroll: true});
+    } catch (_) {}
   }
-  closeButton.addEventListener('click', close);
-  overlay.querySelector('.interior-return').addEventListener('click', close);
+  window.closeInteriorOverlay = close;
+  const handleClose = event => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    close();
+  };
+  closeButton.addEventListener('click', handleClose);
+  overlay.querySelector('.interior-return').addEventListener('click', event => {
+    event.preventDefault();
+    close();
+  });
   previous.addEventListener('click', () => showExperienceIntro(current - 1));
   next.addEventListener('click', () => showExperienceIntro(current + 1));
   overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
@@ -159,7 +188,7 @@
   }, true);
   cars.forEach((car, n) => {
     car.setAttribute('role', 'button');
-    car.setAttribute('aria-haspopup', n===cars.length-1 || n >= 6 ? 'false' : 'dialog');
+    car.setAttribute('aria-haspopup', n===cars.length-1 ? 'false' : 'dialog');
     car.setAttribute('aria-label', n===0?'Toa đầu tiên; khám phá trang phục phù hợp với bạn':n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; hoàn thành bài khám phá để mở toa`);
     if(n>0 && n!==cars.length-1)car.setAttribute('aria-disabled','true');
     let start, dragged = false;
@@ -180,13 +209,8 @@
   if (hint) hint.textContent = 'Bấm vào toa đầu tiên để khám phá trang phục và mở hành trình';
   window.addEventListener('train-quiz-completed',()=>{
     cars.forEach((car,n)=>{
-      if(n >= 6 && n !== cars.length - 1) {
-        car.setAttribute('aria-disabled','true');
-        car.setAttribute('aria-label',`${car.dataset.carName}; không có trải nghiệm tương tác`);
-      } else {
-        car.removeAttribute('aria-disabled');
-        if(n>0)car.setAttribute('aria-label',n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; bấm để khám phá`);
-      }
+      car.removeAttribute('aria-disabled');
+      if(n>0)car.setAttribute('aria-label',n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; bấm để khám phá`);
     });
     if(hint)hint.textContent='Hành trình đã mở · Bấm vào toa để khám phá';
   });
