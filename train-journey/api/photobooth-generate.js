@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const OpenAI = require('openai');
-const formidable = require('formidable');
+const { formidable } = require('formidable');
 
 const MAX_FILE_SIZE = 12 * 1024 * 1024;
 const OUTFIT_NAMES = {
