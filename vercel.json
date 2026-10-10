@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/tet-qa",
+      "destination": "/api/tet-qa.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/train-journey/dist/$1"
+    }
+  ]
+}

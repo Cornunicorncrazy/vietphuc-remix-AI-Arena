@@ -1,4 +1,4 @@
-const { answer } = require('../gemini-qa.cjs');
+const { answer } = require('../train-journey/gemini-qa.cjs');
 
 module.exports = async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store');
