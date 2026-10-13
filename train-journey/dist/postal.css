@@ -14,7 +14,7 @@
 .postal-address{position:absolute;z-index:1;color:#123caa;font:italic 400 clamp(8px,1.1vw,13px)/1.85 'Be Vietnam Pro',Arial,sans-serif;text-shadow:0 1px rgba(255,255,255,.55);overflow-wrap:normal;word-break:normal;hyphens:none;text-align:left}
 .postal-from{left:21%;top:15.5%;width:26%;max-height:26%}
 .postal-to{left:64%;top:50.5%;width:30%;max-height:28%}
-.postal-stamp-spot{position:absolute;z-index:2;left:86.5%;top:10%;width:8.5%;height:18%;display:grid;place-items:center;padding:2px;border:1px dashed #324bac;background:rgba(255,255,255,.88);color:#21479a;font:700 clamp(8px,1.2vw,13px)/1.1 system-ui,sans-serif;cursor:pointer;text-align:center}
+.postal-stamp-spot{position:absolute;z-index:2;left:80.5%;top:12.3%;width:7.7%;height:15.8%;display:grid;place-items:center;padding:2px;border:1px dashed #324bac;background:rgba(255,255,255,.88);color:#21479a;font:700 clamp(8px,1.2vw,13px)/1.1 system-ui,sans-serif;cursor:pointer;text-align:center}
 .postal-stamp-spot img{position:absolute;left:50%;top:50%;display:block;width:calc(142% - 5px);height:calc(70% - 3px);max-width:none;max-height:none;object-fit:contain;transform:translate(-50%,-50%) rotate(90deg);box-shadow:0 1px 4px #777}
 .postal-stamp-spot:disabled{cursor:default}
 .postal-stamp-spot:not(:disabled):hover,.postal-stamp-spot:not(:disabled):focus-visible{outline:3px solid #b83829;outline-offset:2px;background:#fff9df}

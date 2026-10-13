@@ -3,7 +3,7 @@
 .interior-history-tab[aria-selected="true"]{background:var(--theme-ink,#253c35);color:var(--theme-surface,#f3efe3)}
 .interior-history-tab:focus-visible,.history-period:focus-visible,.history-page-sources a:focus-visible{outline:2px solid #b95b38;outline-offset:2px}
 .history-exhibit-host{margin:0 24px 18px;padding:22px;border:1px solid var(--theme-border,#b8c0aa);border-radius:9px;background:radial-gradient(circle at 100% 0%,color-mix(in srgb,#bc8d51 15%,transparent),transparent 30%),var(--theme-surface,#f3efe3);color:var(--theme-ink,#253c35)}
-.history-exhibit-heading{max-width:760px;margin-bottom:22px}
+.history-exhibit-heading{display:block;height:auto;padding:0;max-width:760px;margin-bottom:22px}
 .history-exhibit-kicker,.history-timeline-prompt,.history-page-number{display:block;color:var(--theme-accent,#986441);font:700 9px/1.4 'Be Vietnam Pro',Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase}
 .history-exhibit-heading h3{margin:8px 0;font:400 clamp(25px,3vw,38px)/1.16 'Playfair Display',Georgia,serif}
 .history-exhibit-heading p,.history-exhibit-note{margin:0;color:var(--theme-muted,#687463);font:400 11px/1.65 'Be Vietnam Pro',Arial,sans-serif}

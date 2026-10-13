@@ -31,9 +31,6 @@ body.quiz-open .theme-toggle,body.quiz-open .language-switch,body.quiz-open .tra
 .clothing-quiz-primary { background:#354b3e; color:#f6f0dc; }
 .clothing-quiz-secondary { background:transparent; color:#354b3e; }
 .clothing-quiz-actions button:disabled { opacity:.35; cursor:default; }
-.clothing-quiz-skip { display:block; margin:14px 0 0 auto; border:0; background:none; color:#7b6048; font:500 10px 'Be Vietnam Pro',sans-serif; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
-.clothing-quiz-skip:hover { color:#354b3e; }
-.clothing-quiz-skip:focus-visible { outline:2px solid #a46542; outline-offset:3px; }
 .clothing-quiz-note { color:#727662; font-size:10px; line-height:1.8; margin:16px 0 0; }
 .clothing-quiz-eyebrow { color:#986441; letter-spacing:2px; font-size:9px; margin:4px 0 12px; }
 .clothing-quiz-result-name { font:400 clamp(30px,4vw,44px)/1.2 Georgia,serif; margin:0 0 12px; }
@@ -43,11 +40,6 @@ body.quiz-open .theme-toggle,body.quiz-open .language-switch,body.quiz-open .tra
 .clothing-quiz-gallery-label { margin:0 0 9px; font-size:9px; letter-spacing:2px; color:#986441; text-align:left; }
 .clothing-quiz-main-image { display:block; width:100%; height:290px; object-fit:contain; }
 .clothing-quiz-image-caption { margin:8px 0 12px; font-size:11px; color:#354b3e; }
-.clothing-quiz-variant-list { display:flex; gap:8px; overflow-x:auto; padding:3px 1px 6px; }
-.clothing-quiz-variant { flex:0 0 72px; display:flex; flex-direction:column; gap:4px; align-items:center; padding:5px; border:1px solid #bdc4b4; border-radius:5px; background:#f7f4e9; color:#354b3e; font:9px/1.3 'Be Vietnam Pro',sans-serif; cursor:pointer; }
-.clothing-quiz-variant[aria-pressed="true"] { border:2px solid #986441; background:#fff9ee; }
-.clothing-quiz-variant img { width:56px; height:58px; object-fit:contain; }
-.clothing-quiz-variant span { min-height:24px; }
 .clothing-quiz-alternatives { margin-top:20px; padding-top:17px; border-top:1px solid #c5cbb9; }
 .clothing-quiz-alternatives h4 { font:400 21px Georgia,serif; margin:0 0 12px; }
 .clothing-quiz-alternative-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
@@ -56,6 +48,29 @@ body.quiz-open .theme-toggle,body.quiz-open .language-switch,body.quiz-open .tra
 .clothing-quiz-alternative strong { font:400 15px Georgia,serif; }
 .clothing-quiz-alternative span { font-size:9px; line-height:1.4; }
 .clothing-quiz-alternative:hover,.clothing-quiz-alternative:focus-visible { border-color:#986441; background:#eee7d8; }
+.clothing-quiz-catalogue { margin-top:20px; padding-top:17px; border-top:1px solid #c5cbb9; }
+.clothing-quiz-catalogue-toggle { border:1px solid #80917b; border-radius:6px; padding:11px 16px; background:#f7f4e9; color:#354b3e; font:600 12px/1.5 'Be Vietnam Pro',Arial,sans-serif; cursor:pointer; }
+.clothing-quiz-catalogue-toggle:hover,.clothing-quiz-catalogue-toggle:focus-visible { background:#e3e8db; outline-color:#a46542; }
+.clothing-quiz-catalogue-content[hidden] { display:none; }
+.clothing-quiz-carousel { min-width:0; margin-top:18px; padding-bottom:20px; border-bottom:1px solid #c5cbb9; }
+.clothing-quiz-carousel-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.clothing-quiz-carousel-header h4 { margin:0; font:500 19px/1.4 'Be Vietnam Pro',Arial,sans-serif; }
+.clothing-quiz-carousel-controls { display:flex; align-items:center; gap:9px; }
+.clothing-quiz-carousel-arrow { width:36px; height:36px; border:1px solid #80917b; border-radius:50%; background:#f7f4e9; color:#354b3e; font:500 18px Georgia,serif; cursor:pointer; }
+.clothing-quiz-carousel-arrow:hover,.clothing-quiz-carousel-arrow:focus-visible { background:#e3e8db; outline-color:#a46542; }
+.clothing-quiz-carousel-count { min-width:58px; text-align:center; color:#536d55; font:600 11px 'Be Vietnam Pro',sans-serif; }
+.clothing-quiz-carousel-help { margin:6px 0 12px; color:#687463; font:400 11px/1.6 'Be Vietnam Pro',sans-serif; }
+.clothing-quiz-carousel-track { position:relative; display:grid; grid-auto-flow:column; grid-auto-columns:196px; gap:12px; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:x mandatory; padding:2px 2px 10px; scrollbar-width:thin; }
+.clothing-quiz-carousel-item { display:flex; flex-direction:column; align-items:stretch; min-width:0; min-height:267px; padding:9px; border:1px solid #b8c0aa; border-radius:8px; background:#faf7ee; color:#354b3e; text-align:left; cursor:pointer; scroll-snap-align:center; }
+.clothing-quiz-carousel-item img { display:block; width:100%; height:165px; margin-bottom:9px; object-fit:contain; background:#e8e8dc; border-radius:4px; }
+.clothing-quiz-carousel-item strong { font:500 15px/1.35 'Be Vietnam Pro',Arial,sans-serif; }
+.clothing-quiz-carousel-item span { margin-top:4px; font:500 11px/1.4 'Be Vietnam Pro',sans-serif; }
+.clothing-quiz-carousel-item small { margin-top:5px; color:#687463; font:400 10px/1.45 'Be Vietnam Pro',sans-serif; }
+.clothing-quiz-carousel-item:hover,.clothing-quiz-carousel-item:focus-visible { border-color:#986441; background:#eee7d8; }
+.clothing-quiz-carousel-item[aria-pressed="true"] { border:2px solid #986441; background:#e3e8db; }
+.clothing-quiz-catalogue-detail { margin-top:2px; padding:14px 16px; border:1px solid #c5cbb9; border-radius:7px; background:#f7f4e9; }
+.clothing-quiz-catalogue-detail strong { display:block; color:#354b3e; font:600 13px/1.5 'Be Vietnam Pro',Arial,sans-serif; }
+.clothing-quiz-catalogue-detail p { margin:6px 0 0; color:#536055; font:400 12px/1.7 'Be Vietnam Pro',Arial,sans-serif; }
 .clothing-quiz-tagline { color:#986441; font:italic 19px/1.5 Georgia,serif; margin:0 0 14px; }
 .clothing-quiz-description { font-size:12px; line-height:1.9; }
 .clothing-quiz-traits { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }

@@ -16,16 +16,9 @@
     const useVisualViewport = viewport && Math.abs(viewport.scale - 1) < 0.01;
     const width = useVisualViewport ? viewport.width : window.innerWidth;
     const height = useVisualViewport ? viewport.height : window.innerHeight;
-    const rotated = mobile && height > width;
-    const logicalWidth = rotated ? height : width;
-    const logicalHeight = rotated ? width : height;
-    root.style.setProperty('--physical-width', `${width}px`);
-    root.style.setProperty('--physical-height', `${height}px`);
-    root.style.setProperty('--view-width', `${logicalWidth}px`);
-    root.style.setProperty('--view-height', `${logicalHeight}px`);
-    root.classList.toggle('mobile-landscape', mobile);
-    root.classList.toggle('mobile-rotated', rotated);
-    window.trainViewport = { mobile, rotated, width: logicalWidth, height: logicalHeight };
+    root.style.setProperty('--view-width', `${width}px`);
+    root.style.setProperty('--view-height', `${height}px`);
+    root.classList.toggle('mobile-landscape', mobile && width > height);
   }
 
   function scheduleUpdate() {

@@ -2,8 +2,9 @@
   let language='vi';try{language=localStorage.getItem('train-language')==='en'?'en':'vi';}catch(_){}
   const dictionary=window.trainTranslations, records=new WeakMap(), attributes=new WeakMap();
   function translate(source){
-    if(language==='vi')return source;
-    const whitespace=source.match(/^(\s*)([\s\S]*?)(\s*)$/),text=whitespace[2];
+    const normalizedSource=source.normalize('NFC');
+    if(language==='vi')return normalizedSource;
+    const whitespace=normalizedSource.match(/^(\s*)([\s\S]*?)(\s*)$/),text=whitespace[2];
     let result=dictionary[text];
     if(result===undefined){
       const rules=[
@@ -25,7 +26,7 @@
       ];
       for(const [pattern,fn]of rules)if(pattern.test(text)){result=text.replace(pattern,fn);break;}
     }
-    return whitespace[1]+(result??text)+whitespace[3];
+    return whitespace[1]+(result??text).normalize('NFC')+whitespace[3];
   }
   const switcher=document.createElement('div');switcher.className='language-switch';switcher.dataset.noTranslate='';switcher.setAttribute('role','group');switcher.setAttribute('aria-label','Ngôn ngữ / Language');
   ['vi','en'].forEach(code=>{const b=document.createElement('button');b.type='button';b.textContent=code.toUpperCase();b.setAttribute('aria-label',code==='vi'?'Tiếng Việt':'English');b.addEventListener('click',()=>setLanguage(code));switcher.append(b);});document.body.append(switcher);

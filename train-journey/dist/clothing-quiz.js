@@ -8,10 +8,12 @@
   journey.append(overlay);
   const body = overlay.querySelector('.clothing-quiz-body');
   const closeButton = overlay.querySelector('.clothing-quiz-close');
-  let selections = {}, step = 0, mode = null, gender = null, resultShown = false, chosenCategory, returnFocus, inactive = [];
+  let selections = {}, step = 0, mode = null, gender = null, resultShown = false, chosenCategory, chosenVariantId, showAllGarments = false, catalogueIndex = null, returnFocus, inactive = [];
   const data = () => window.clothingQuizData;
   const activeQuestions = () => data()?.questions?.filter(question => mode === 'detailed' || question.quick) || [];
   const visibleVariants = id => window.clothingQuizVisibleVariants?.(id, gender || 'other') || window.clothingQuizGarmentVariants?.[id] || [];
+  const allGarments = () => data()?.categories?.flatMap(category =>
+    (window.clothingQuizGarmentVariants?.[category.id] || []).map(variant => ({category, variant}))) || [];
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -59,24 +61,14 @@
     window.trainQuizComplete = true;
     window.dispatchEvent(new CustomEvent('train-quiz-completed', {detail: {categoryId}}));
   }
-  function skipQuiz() {
-    // Temporary test shortcut: unlock through the same event as a finished quiz.
-    window.clothingQuizGender = gender || 'other';
-    unlockJourney();
-    close();
-    window.go?.(1);
-  }
-  function skipButton() {
-    return action('Bỏ qua toa 1 (thử nghiệm) →', 'clothing-quiz-skip', skipQuiz);
-  }
   function renderIntro(focus = false) {
     resultShown = false;
     body.replaceChildren();
     const title = element('h3', 'clothing-quiz-intro-title', 'Trước khi khám phá');
     title.tabIndex = -1;
-    body.append(title, element('p', 'clothing-quiz-description', 'Chọn giới tính để lọc ảnh mẫu và gợi ý hiển thị. Lựa chọn này không cộng điểm vào câu trả lời.'));
+    body.append(title, element('p', 'clothing-quiz-description', 'Chọn giới tính để nhận gợi ý ban đầu. Trong kết quả, bạn vẫn có thể xem toàn bộ trang phục.'));
     const genderField = element('fieldset', 'clothing-quiz-choice-group');
-    genderField.append(element('legend', '', 'Bạn muốn xem mẫu trang phục theo giới tính nào?'));
+    genderField.append(element('legend', '', 'Bạn muốn nhận gợi ý theo giới tính nào?'));
     const genderChoices = element('div', 'clothing-quiz-start-options');
     [['female', 'Nữ'], ['male', 'Nam'], ['other', 'Khác']].forEach(([id, label]) => {
       const option = action(label, 'clothing-quiz-start-option', () => {gender = id; [...genderChoices.children].forEach(item => item.setAttribute('aria-pressed', String(item === option))); start.disabled = !mode;});
@@ -101,57 +93,102 @@
       selections = {};
       step = 0;
       chosenCategory = undefined;
+      chosenVariantId = undefined;
+      showAllGarments = false;
+      catalogueIndex = null;
       renderQuestion(true);
     });
     start.disabled = !gender || !mode;
     footer.append(start);
-    body.append(footer, skipButton());
+    body.append(footer);
     if (focus) title.focus({preventScroll: true});
   }
-  function renderGallery(category) {
-    const variants = visibleVariants(category.id), gallery = element('section', 'clothing-quiz-gallery');
-    gallery.append(element('p', 'clothing-quiz-gallery-label', 'MẪU TRANG PHỤC'));
-    if (!variants.length) {gallery.append(element('p', 'clothing-quiz-note', 'Chưa có ảnh mẫu cho lựa chọn này.')); return gallery;}
+  function renderGallery(category, variant) {
+    const gallery = element('section', 'clothing-quiz-gallery');
+    gallery.append(element('p', 'clothing-quiz-gallery-label', 'MẪU ĐANG XEM'));
+    const label = variant.displayName || `${category.name} · ${variant.name}`;
     const main = element('img', 'clothing-quiz-main-image');
-    const firstLabel = variants[0].displayName || `${category.name} · ${variants[0].name}`;
-    main.src = variants[0].src;
-    main.alt = firstLabel;
-    const caption = element('p', 'clothing-quiz-image-caption', firstLabel);
-    gallery.append(main, caption);
-    if (variants.length > 1) {
-      const list = element('div', 'clothing-quiz-variant-list');
-      variants.forEach((variant, index) => {
-        const label = variant.displayName || `${category.name} · ${variant.name}`;
-        const option = action('', 'clothing-quiz-variant', () => {
-          main.src = variant.src;
-          main.alt = label;
-          caption.textContent = label;
-          [...list.children].forEach(item => item.setAttribute('aria-pressed', String(item === option)));
-        });
-        option.setAttribute('aria-label', `Xem mẫu ${label}`);
-        option.setAttribute('aria-pressed', String(index === 0));
-        const thumb = element('img'); thumb.src = variant.src; thumb.alt = ''; thumb.loading = 'lazy';
-        option.append(thumb, element('span', '', variant.name));
-        list.append(option);
-      });
-      gallery.append(list);
-    }
+    main.src = variant.src;
+    main.alt = label;
+    gallery.append(main, element('p', 'clothing-quiz-image-caption', label));
     return gallery;
   }
-  function renderResult(preferredId = chosenCategory) {
+  function renderCarousel(garments, selectedIndex) {
+    const section = element('section', 'clothing-quiz-carousel');
+    section.setAttribute('aria-labelledby', 'clothing-quiz-carousel-title');
+    const header = element('div', 'clothing-quiz-carousel-header');
+    const heading = element('h4', '', 'Tất cả trang phục');
+    heading.id = 'clothing-quiz-carousel-title';
+    const controls = element('div', 'clothing-quiz-carousel-controls');
+    const previous = action('←', 'clothing-quiz-carousel-arrow', () => selectGarment(selectedIndex - 1, 'previous'));
+    const next = action('→', 'clothing-quiz-carousel-arrow', () => selectGarment(selectedIndex + 1, 'next'));
+    previous.setAttribute('aria-label', 'Mẫu trang phục trước');
+    next.setAttribute('aria-label', 'Mẫu trang phục tiếp theo');
+    controls.append(previous, element('span', 'clothing-quiz-carousel-count', `${selectedIndex + 1} / ${garments.length}`), next);
+    header.append(heading, controls);
+    section.append(header, element('p', 'clothing-quiz-carousel-help', 'Vuốt ngang hoặc dùng mũi tên để xem từng mẫu.'));
+    const track = element('div', 'clothing-quiz-carousel-track');
+    track.setAttribute('role', 'group');
+    track.setAttribute('aria-label', 'Danh sách tất cả mẫu trang phục');
+    garments.forEach(({category, variant}, index) => {
+      const card = action('', 'clothing-quiz-carousel-item', () => selectGarment(index, 'card'));
+      card.setAttribute('aria-label', `Xem mẫu ${variant.displayName || `${category.name} · ${variant.name}`}`);
+      card.setAttribute('aria-pressed', String(index === selectedIndex));
+      const image = element('img');
+      image.src = variant.src;
+      image.alt = '';
+      image.loading = index === selectedIndex ? 'eager' : 'lazy';
+      card.append(image, element('strong', '', category.name), element('span', '', variant.name), element('small', '', category.tagline));
+      track.append(card);
+    });
+    section.append(track);
+    requestAnimationFrame(() => {
+      const selected = track.children[selectedIndex];
+      if (selected?.isConnected) track.scrollLeft = selected.offsetLeft - (track.clientWidth - selected.clientWidth) / 2;
+    });
+    return section;
+  }
+  function selectGarment(index, focusTarget) {
+    const garments = allGarments();
+    if (!garments.length) return;
+    const nextIndex = (index + garments.length) % garments.length;
+    const content = body.querySelector('.clothing-quiz-catalogue-content');
+    if (!content || content.hidden) return;
+    catalogueIndex = nextIndex;
+    content.replaceChildren(renderCarousel(garments, nextIndex), renderCatalogueDetail(garments[nextIndex]));
+    const focusSelector = focusTarget === 'previous' ? '.clothing-quiz-carousel-arrow:first-child'
+      : focusTarget === 'next' ? '.clothing-quiz-carousel-arrow:last-child'
+      : '.clothing-quiz-carousel-item[aria-pressed="true"]';
+    content.querySelector(focusSelector)?.focus({preventScroll: true});
+  }
+  function renderCatalogueDetail({category, variant}) {
+    const detail = element('div', 'clothing-quiz-catalogue-detail');
+    detail.setAttribute('role', 'status');
+    detail.append(element('strong', '', variant.displayName || `${category.name} · ${variant.name}`),
+      element('p', '', category.description));
+    return detail;
+  }
+  function renderResult(preferredId = chosenCategory, preferredVariantId = chosenVariantId, focusTarget = 'heading') {
     const questions = activeQuestions();
     if (!questions.length || !questions.every(question => Number.isInteger(selections[question.id]) && !!question.answers[selections[question.id]])) return;
     const result = window.scoreClothingQuiz(selections, {mode, gender});
     if (!result) return;
     const top = result.ranked[0], margin = Math.max(1.5, top.score * .22);
     const suggested = result.ranked.filter((item, index) => index > 0 && top.score - item.score <= margin).slice(0, 3);
-    const active = [top, ...suggested].find(item => item.category.id === preferredId) || top;
-    const category = active.category;
+    const garments = allGarments();
+    const category = data().categories.find(item => item.id === preferredId) || top.category;
+    const filteredFirst = visibleVariants(category.id)[0];
+    const selectedIndex = garments.findIndex(({category: item, variant}) => item.id === category.id && variant.id === preferredVariantId);
+    const fallbackIndex = garments.findIndex(({category: item, variant}) => item.id === category.id && variant.id === filteredFirst?.id);
+    const activeIndex = selectedIndex >= 0 ? selectedIndex : fallbackIndex >= 0 ? fallbackIndex : garments.findIndex(item => item.category.id === category.id);
+    if (activeIndex < 0) return;
+    const variant = garments[activeIndex].variant;
     chosenCategory = category.id;
+    chosenVariantId = variant.id;
     resultShown = true;
     body.replaceChildren();
     const layout = element('div', 'clothing-quiz-result-layout'), copy = element('section', 'clothing-quiz-result-copy');
-    copy.append(element('p', 'clothing-quiz-eyebrow', 'TRANG PHỤC GỢI Ý CHO BẠN'));
+    copy.append(element('p', 'clothing-quiz-eyebrow', [top, ...suggested].some(item => item.category.id === category.id) ? 'TRANG PHỤC GỢI Ý CHO BẠN' : 'TRANG PHỤC BẠN ĐANG XEM'));
     const heading = element('h3', 'clothing-quiz-result-name', category.name);
     heading.tabIndex = -1;
     copy.append(heading, element('p', 'clothing-quiz-tagline', category.tagline), element('p', 'clothing-quiz-description', category.description));
@@ -179,32 +216,58 @@
       details.append(list);
       copy.append(details);
     }
-    layout.append(copy, renderGallery(category));
+    layout.append(copy, renderGallery(category, variant));
     body.append(layout);
     if (suggested.length) {
       const alternatives = element('section', 'clothing-quiz-alternatives');
       alternatives.append(element('h4', '', 'Trang phục khác có thể phù hợp với bạn'));
       const cards = element('div', 'clothing-quiz-alternative-list');
       suggested.filter(item => item.category.id !== category.id).concat(category.id !== top.category.id ? [top] : []).forEach(item => {
-        const option = action('', 'clothing-quiz-alternative', () => renderResult(item.category.id));
-        const variant = visibleVariants(item.category.id)[0];
-        if (variant) {const image = element('img'); image.src = variant.src; image.alt = ''; image.loading = 'lazy'; option.append(image);}
+        const option = action('', 'clothing-quiz-alternative', () => renderResult(item.category.id, null));
+        const preview = visibleVariants(item.category.id)[0] || window.clothingQuizGarmentVariants?.[item.category.id]?.[0];
+        if (preview) {
+          const image = element('img'); image.src = preview.src; image.alt = ''; image.loading = 'lazy'; option.append(image);
+        }
         option.append(element('strong', '', item.category.name), element('span', '', item.category.tagline));
         cards.append(option);
       });
       alternatives.append(cards);
       body.append(alternatives);
     }
+    const catalogue = element('section', 'clothing-quiz-catalogue');
+    const toggle = action(showAllGarments ? 'Ẩn tất cả trang phục' : 'Xem tất cả trang phục', 'clothing-quiz-catalogue-toggle', () => {
+      showAllGarments = !showAllGarments;
+      renderResult(category.id, variant.id, 'toggle');
+    });
+    toggle.setAttribute('aria-expanded', String(showAllGarments));
+    toggle.setAttribute('aria-controls', 'clothing-quiz-catalogue-content');
+    const content = element('div', 'clothing-quiz-catalogue-content');
+    content.id = 'clothing-quiz-catalogue-content';
+    content.hidden = !showAllGarments;
+    if (showAllGarments) {
+      const currentIndex = Number.isInteger(catalogueIndex) && catalogueIndex < garments.length ? catalogueIndex : activeIndex;
+      catalogueIndex = currentIndex;
+      content.append(renderCarousel(garments, currentIndex), renderCatalogueDetail(garments[currentIndex]));
+    }
+    catalogue.append(toggle, content);
+    body.append(catalogue);
     const footer = element('div', 'clothing-quiz-actions');
-    footer.append(action('Khám phá lại', 'clothing-quiz-secondary', () => {selections = {}; step = 0; mode = null; gender = null; resultShown = false; chosenCategory = undefined; renderIntro(true);}), action('Tiếp tục hành trình →', 'clothing-quiz-primary', () => {close(); window.go?.(1);}));
+    footer.append(action('Khám phá lại', 'clothing-quiz-secondary', () => {selections = {}; step = 0; mode = null; gender = null; resultShown = false; chosenCategory = undefined; chosenVariantId = undefined; showAllGarments = false; catalogueIndex = null; renderIntro(true);}), action('Tiếp tục hành trình →', 'clothing-quiz-primary', () => {close(); window.go?.(1);}));
     body.append(element('p', 'clothing-quiz-unlocked', 'Các toa tiếp theo đã mở. Hành trình của bạn bắt đầu!'), footer);
-    unlockJourney(category.id);
-    heading.focus({preventScroll: true});
+    if (!window.trainQuizComplete) unlockJourney(top.category.id);
+    const card = body.closest('.clothing-quiz-card');
+    if (focusTarget === 'heading' || focusTarget === 'card') card.scrollTop = 0;
+    else if (focusTarget === 'toggle' || focusTarget === 'previous' || focusTarget === 'next') card.scrollTop = catalogue.offsetTop - 18;
+    const focusSelector = focusTarget === 'previous' ? '.clothing-quiz-carousel-arrow:first-child'
+      : focusTarget === 'next' ? '.clothing-quiz-carousel-arrow:last-child'
+      : focusTarget === 'toggle' ? '.clothing-quiz-catalogue-toggle' : null;
+    if (focusSelector) body.querySelector(focusSelector)?.focus({preventScroll: true});
+    else heading.focus({preventScroll: true});
   }
   function renderQuestion(focus = false) {
     const questions = activeQuestions();
     if (!questions.length) {
-      body.replaceChildren(element('p', 'clothing-quiz-description', 'Chưa thể tải bài khám phá. Hãy đóng cửa sổ và thử lại.'), skipButton());
+      body.replaceChildren(element('p', 'clothing-quiz-description', 'Chưa thể tải bài khám phá. Hãy đóng cửa sổ và thử lại.'));
       return;
     }
     body.replaceChildren();
@@ -243,7 +306,7 @@
     });
     next.disabled = !Number.isInteger(selections[question.id]);
     footer.append(back, next);
-    body.append(footer, element('p', 'clothing-quiz-note', 'Không có đáp án đúng hay sai. Hoàn thành bài khám phá để mở các toa tiếp theo.'), skipButton());
+    body.append(footer, element('p', 'clothing-quiz-note', 'Không có đáp án đúng hay sai. Hoàn thành bài khám phá để mở các toa tiếp theo.'));
     if (focus) legend.focus({preventScroll: true});
   }
   window.openClothingQuiz = () => {
@@ -255,7 +318,7 @@
       overlay.hidden = false;
       document.body.classList.add('quiz-open');
     }
-    if (!mode || !gender) renderIntro(); else if (resultShown) renderResult(); else renderQuestion();
+    if (!mode || !gender) renderIntro(); else if (resultShown) renderResult(chosenCategory, chosenVariantId); else renderQuestion();
     closeButton.focus({preventScroll: true});
   };
   closeButton.addEventListener('click', close);

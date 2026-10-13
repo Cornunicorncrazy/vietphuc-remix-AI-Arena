@@ -38,10 +38,10 @@
       const ctx = canvas.getContext('2d');
       ctx.drawImage(image, 0, 92, 2032, 600, 0, 0, 2032, 600);
       let size = 32;
-      ctx.font = `italic ${size}px Georgia, serif`;
+      ctx.font = `italic ${size}px "Be Vietnam Pro", Arial, sans-serif`;
       while (ctx.measureText(name).width > 312 && size > 12) {
         size -= 1;
-        ctx.font = `italic ${size}px Georgia, serif`;
+        ctx.font = `italic ${size}px "Be Vietnam Pro", Arial, sans-serif`;
       }
       ctx.fillStyle = '#365d69';
       ctx.textAlign = 'center';

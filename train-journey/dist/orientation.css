@@ -1,23 +1,20 @@
 :root {
   --view-width: 100vw;
   --view-height: 100svh;
-  --physical-width: 100vw;
-  --physical-height: 100svh;
 }
 
 .train-track {
   left: calc((var(--view-width) - var(--car-width)) / 2);
 }
 
-/* Actual mobile browsers use one landscape composition in either orientation.
-   All selectors override physical-width media queries in the base stylesheet. */
+/* Use the compact landscape composition only when the device is held sideways. */
 .mobile-landscape {
   --car-width: min(calc(var(--view-width) * .96), calc((var(--view-height) - 172px) * 3.05556));
   overflow: hidden;
 }
 .mobile-landscape body {
-  width: var(--physical-width);
-  height: var(--physical-height);
+  width: var(--view-width);
+  height: var(--view-height);
   overflow: hidden;
 }
 .mobile-landscape .journey {
@@ -27,10 +24,6 @@
   width: var(--view-width);
   height: var(--view-height);
   min-height: 0;
-  transform-origin: 0 0;
-}
-.mobile-rotated .journey {
-  transform: translateX(var(--physical-width)) rotate(90deg);
 }
 .mobile-landscape header {
   height: 44px;
@@ -77,7 +70,6 @@
 .mobile-landscape .dots button { width: 7px; height: 7px; }
 .mobile-landscape .hint { display: block; font-size: 6px; letter-spacing: .6px; }
 .mobile-landscape .hint small { font-size: 7px; margin-top: 5px; }
-.mobile-rotated .scene { touch-action: pan-x; }
 
 @media (prefers-reduced-motion: reduce) {
   .mobile-landscape .journey { transition: none; }

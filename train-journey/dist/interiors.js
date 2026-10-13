@@ -23,7 +23,7 @@
     <button class="experience-close" type="button" aria-label="Đóng giới thiệu hoạt động"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg></button>
     <h2 id="experience-title"></h2>
     <p id="experience-description"></p>
-    <div class="experience-actions"><button class="experience-later" type="button">Để sau</button><button class="experience-continue" type="button">Tiếp tục khám phá →</button></div>
+    <div class="experience-actions"><button class="experience-later" type="button">Để sau</button><button class="experience-continue" type="button">Trải nghiệm hoạt động</button></div>
   </section>`;
   journey.append(experienceOverlay);
   const experienceTitle = experienceOverlay.querySelector('#experience-title');
@@ -31,7 +31,7 @@
   const experienceContinue = experienceOverlay.querySelector('.experience-continue');
   let pendingExperience = null, experienceReturnFocus, experienceInactive = [];
   const experienceDetails = [
-    {title:'Khám phá phong cách trang phục', description:'Trả lời 9 câu hỏi về sở thích để nhận một gợi ý trang phục và mở hành trình qua các toa.'},
+    {title:'Tìm Việt phục hợp với bạn', description:'Khám phá kiểu trang phục truyền thống hợp với bạn qua vài câu hỏi ngắn. Kết quả là gợi ý để bạn tìm hiểu và thử những mẫu mình yêu thích.'},
     {title:'Chụp ảnh cùng Việt phục', description:'Chọn khung hình, thêm ảnh của bạn và chọn một mẫu trang phục để tạo kỷ niệm trong photobooth.'},
     {title:'Gửi thư từ toa bưu điện', description:'Chọn tem, viết lời chào và lưu lại một tấm thư kỷ niệm từ chuyến tàu Việt phục.'},
     {title:'Hỏi đáp trang phục', description:'Chọn câu hỏi gợi ý để tìm hiểu trang phục truyền thống cùng trợ lý Gemini.'},

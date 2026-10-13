@@ -37,13 +37,12 @@ document.addEventListener('keydown',e=>{
 let touchStart=null;
 const scene=document.querySelector('.scene');
 scene.addEventListener('touchstart',e=>{
-  touchStart={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY,rotated:!!window.trainViewport?.rotated};
+  touchStart={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};
 },{passive:true});
 scene.addEventListener('touchend',e=>{
   if(!touchStart)return;
   const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;
-  const along=touchStart.rotated?dy:dx,across=touchStart.rotated?dx:dy;
-  if(Math.abs(along)>45&&Math.abs(along)>Math.abs(across))go(index+(along<0?1:-1));
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))go(index+(dx<0?1:-1));
   touchStart=null;
 },{passive:true});
 scene.addEventListener('touchcancel',()=>{touchStart=null},{passive:true});
