@@ -6,32 +6,37 @@
     6: {
       title: 'Tràng An · Ninh Bình',
       region: 'ĐIỂM DỪNG DI SẢN',
-      description: 'Ngồi thuyền giữa dòng nước êm, nhìn núi đá vôi và những hang động mở ra trên đường đi. Tràng An là một cách thật chậm để ngắm vẻ đẹp Ninh Bình.',
-      image: 'Trang An Landscape Complex, Ninh Binh Province, Vietnam, 20240202 1447 5310.jpg',
+      description: 'Ngồi thuyền qua các thung nước, núi đá vôi và hang động của Tràng An. Quần thể danh thắng này được UNESCO ghi danh là Di sản Thế giới hỗn hợp về văn hóa và thiên nhiên năm 2014.',
+      tip: 'Gợi ý tham quan: chọn một trong các tuyến thuyền đi qua hang và đền; mang áo chống nắng, nước uống và mặc áo phao theo hướng dẫn.',
+      image: 'https://images.pexels.com/photos/29819078/pexels-photo-29819078.jpeg?auto=compress&cs=tinysrgb&w=1200',
       alt: 'Thuyền trên dòng nước giữa núi đá vôi Tràng An, Ninh Bình',
-      credit: 'Ảnh: Jakub Hałun · Wikimedia Commons · CC BY 4.0',
-      source: 'https://commons.wikimedia.org/wiki/File:Trang_An_Landscape_Complex,_Ninh_Binh_Province,_Vietnam,_20240202_1447_5310.jpg',
-      guide: 'https://www.vietnam.travel/vi/things-to-do/guide-boat-tours-ninh-binh'
+      credit: 'Ảnh: Sachith Ravishka Kodikara · Pexels',
+      source: 'https://www.pexels.com/photo/scenic-boat-tour-through-trang-an-landscape-29819078/',
+      guide: 'https://vietnam.travel/things-to-do/guide-boat-tours-ninh-binh',
+      heritage: 'https://whc.unesco.org/en/list/1438'
     },
     7: {
       title: 'Hồ Hoàn Kiếm · Hà Nội',
       region: 'ĐIỂM DỪNG THỦ ĐÔ',
-      description: 'Giữa nhịp phố Hà Nội, mặt hồ và những hàng cây tạo một khoảng lặng. Hãy dạo một vòng quanh hồ để cảm nhận đời sống thường ngày của thủ đô.',
-      image: 'Hanoi, Vietnam, Hoan Kiem Lake.jpg',
-      alt: 'Cảnh hồ Hoàn Kiếm ở trung tâm Hà Nội',
-      credit: 'Ảnh: Vyacheslav Argenberg · Wikimedia Commons · CC BY 4.0',
-      source: 'https://commons.wikimedia.org/wiki/File:Hanoi,_Vietnam,_Hoan_Kiem_Lake.jpg',
-      guide: 'https://www.vietnam.travel/vi/things-to-do/11-must-see-attractions-ha-noi'
+      description: 'Dạo quanh Hồ Hoàn Kiếm để cảm nhận nhịp sống giữa trung tâm Hà Nội. Ở phía bắc hồ, cầu Thê Húc dẫn đến đền Ngọc Sơn trên một đảo nhỏ.',
+      tip: 'Gợi ý tham quan: đi bộ ven hồ vào sáng sớm hoặc cuối chiều, rồi ghé cầu Thê Húc và đền Ngọc Sơn.',
+      image: 'https://images.pexels.com/photos/18693557/pexels-photo-18693557.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      alt: 'Tháp Rùa giữa hồ Hoàn Kiếm ở trung tâm Hà Nội',
+      credit: 'Ảnh: Hiep Nguyen · Pexels',
+      source: 'https://www.pexels.com/photo/hoan-kiem-lake-by-hoan-kiem-lake-18693557/',
+      guide: 'https://vietnam.travel/things-to-do/explore-old-quarter-your-way'
     },
     8: {
       title: 'Ga Đà Lạt · Lâm Đồng',
       region: 'ĐIỂM DỪNG CAO NGUYÊN',
-      description: 'Một nhà ga cổ giữa thành phố của đồi thông và tiết trời mát. Từ đây, tiếp tục khám phá hồ Xuân Hương, những vườn hoa và nét kiến trúc riêng của Đà Lạt.',
-      image: 'Da Lat - Train Station.jpg',
+      description: 'Ga Đà Lạt mang phong cách Art Deco với ba mái nhọn gợi dáng núi Lang Biang. Từ nhà ga, du khách có thể đi tàu đến Trại Mát để thăm chùa Linh Phước.',
+      tip: 'Gợi ý tham quan: ngắm mặt tiền và các ô kính màu của nhà ga; kiểm tra lịch chạy tàu tại chỗ nếu muốn đi Trại Mát.',
+      image: 'https://images.pexels.com/photos/906143/pexels-photo-906143.jpeg?auto=compress&cs=tinysrgb&w=1200',
       alt: 'Nhà ga cổ Đà Lạt ở Lâm Đồng',
-      credit: 'Ảnh: P. Hughes · Wikimedia Commons · CC BY 4.0',
-      source: 'https://commons.wikimedia.org/wiki/File:Da_Lat_-_Train_Station.jpg',
-      guide: 'https://www.vietnam.travel/vi/things-to-do/da-lat-enjoy-four-seasons-day'
+      credit: 'Ảnh: Min An · Pexels',
+      source: 'https://www.pexels.com/photo/beige-and-brown-concrete-house-906143/',
+      guide: 'https://vietnam.travel/index.php/things-to-do/highland-escape-coffee-waterfalls-cool-breezes-da-lat',
+      heritage: 'https://vietnam.travel/node/100'
     }
   };
 
@@ -41,8 +46,8 @@
   overlay.innerHTML = `<section class="destination-card" role="dialog" aria-modal="true" aria-labelledby="destination-title" aria-describedby="destination-description">
     <button class="destination-close" type="button" aria-label="Đóng điểm dừng">×</button>
     <div class="destination-media"><img alt="" loading="lazy" decoding="async"></div>
-    <div class="destination-content"><span class="destination-kicker"></span><h2 id="destination-title"></h2><p id="destination-description"></p>
-      <div class="destination-links"><a class="destination-guide" target="_blank" rel="noopener noreferrer">Khám phá thêm ↗</a><a class="destination-credit" target="_blank" rel="noopener noreferrer"></a></div>
+    <div class="destination-content"><span class="destination-kicker"></span><h2 id="destination-title"></h2><p id="destination-description"></p><p class="destination-tip"></p>
+      <div class="destination-links"><a class="destination-guide" target="_blank" rel="noopener noreferrer">Nguồn và hướng dẫn ↗</a><a class="destination-heritage" target="_blank" rel="noopener noreferrer">Tìm hiểu thêm ↗</a><a class="destination-credit" target="_blank" rel="noopener noreferrer"></a><a class="destination-license" href="https://www.pexels.com/license/" target="_blank" rel="noopener noreferrer">Giấy phép ảnh Pexels ↗</a></div>
       <nav class="destination-navigation" aria-label="Chuyển điểm dừng"><button class="destination-prev" type="button">← Điểm trước</button><button class="destination-return" type="button">Trở lại đoàn tàu</button><button class="destination-next" type="button">Điểm tiếp →</button></nav>
     </div>
   </section>`;
@@ -50,9 +55,11 @@
   const image = overlay.querySelector('img');
   const title = overlay.querySelector('#destination-title');
   const description = overlay.querySelector('#destination-description');
+  const tip = overlay.querySelector('.destination-tip');
   const kicker = overlay.querySelector('.destination-kicker');
   const credit = overlay.querySelector('.destination-credit');
   const guide = overlay.querySelector('.destination-guide');
+  const heritage = overlay.querySelector('.destination-heritage');
   const previous = overlay.querySelector('.destination-prev');
   const next = overlay.querySelector('.destination-next');
   const closeButton = overlay.querySelector('.destination-close');
@@ -66,11 +73,14 @@
     kicker.textContent = place.region;
     title.textContent = place.title;
     description.textContent = place.description;
-    image.src = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(place.image)}?width=1200`;
+    tip.textContent = place.tip;
+    image.src = place.image;
     image.alt = place.alt;
     credit.href = place.source;
     credit.textContent = place.credit;
     guide.href = place.guide;
+    heritage.hidden = !place.heritage;
+    if (place.heritage) heritage.href = place.heritage;
     previous.disabled = n === 6;
     next.disabled = n === 8;
     window.trainI18n?.apply();

@@ -26,7 +26,7 @@ function renderLocomotive(){
   ${vent(343,84)}${vent(446,84)}${vent(785,81)}${vent(881,79)}
   ${window(557,86,48,44)}${window(678,87,44,42)}${window(989,88,47,57)}
   <path d="M973 77v151h78V77m-78 80h78" fill="none" stroke="#56758b"/><path d="M1038 163h-14m6-4v9" stroke="#b6c0b4" stroke-width="3"/>
-  <text x="650" y="147" text-anchor="middle" fill="#e9e7d7" font-family="Georgia,serif" font-size="19" letter-spacing=".7">ĐƯỜNG SẮT VIỆT NAM</text>
+  <text x="650" y="147" text-anchor="middle" fill="#e9e7d7" font-family="Cambria,Times New Roman,serif" font-size="19" letter-spacing=".7">ĐƯỜNG SẮT VIỆT NAM</text>
   ${[573,694].map(x=>vent(x,24,187,33)).join('')}<ellipse cx="650" cy="207" rx="8" ry="13" fill="#132735"/>
   <rect x="160" y="161" width="65" height="20" rx="2" fill="#243a4a" stroke="#c5a84d"/><text x="192" y="176" font-family="Arial" font-weight="bold" font-size="12" text-anchor="middle" fill="#dbc46c">D19E-946</text><text x="274" y="199" fill="#dfc76d" font-family="Arial" font-size="12">2</text>
   <text x="531" y="268" fill="#b5c1bc" font-family="Arial" font-size="7">Vmax 120 km/h</text><text x="706" y="268" fill="#b5c1bc" font-family="Arial" font-size="7">CẤP NƯỚC</text>

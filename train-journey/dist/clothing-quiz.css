@@ -71,7 +71,7 @@ body.quiz-open .theme-toggle,body.quiz-open .language-switch,body.quiz-open .tra
 .clothing-quiz-catalogue-detail { margin-top:2px; padding:14px 16px; border:1px solid #c5cbb9; border-radius:7px; background:#f7f4e9; }
 .clothing-quiz-catalogue-detail strong { display:block; color:#354b3e; font:600 13px/1.5 'Be Vietnam Pro',Arial,sans-serif; }
 .clothing-quiz-catalogue-detail p { margin:6px 0 0; color:#536055; font:400 12px/1.7 'Be Vietnam Pro',Arial,sans-serif; }
-.clothing-quiz-tagline { color:#986441; font:italic 19px/1.5 Georgia,serif; margin:0 0 14px; }
+.clothing-quiz-tagline { color:#986441; font:italic 19px/1.5 Cambria,'Times New Roman',serif; margin:0 0 14px; }
 .clothing-quiz-description { font-size:12px; line-height:1.9; }
 .clothing-quiz-traits { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
 .clothing-quiz-traits span { border:1px solid #bcc5b0; border-radius:30px; padding:7px 12px; background:#e6e9dc; font-size:10px; }

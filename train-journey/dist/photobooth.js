@@ -187,7 +187,7 @@
   async function exportFrame(){
     try{const c=document.createElement('canvas');c.width=frame.w;c.height=frame.h;const ctx=c.getContext('2d');ctx.fillStyle=frame.color;ctx.fillRect(0,0,c.width,c.height);
       for(let i=0;i<frame.slots.length;i++){const p=photos.find(p=>p.id===placements[i]);if(!p)throw Error('Hãy chọn ảnh cho tất cả các ô.');const img=await loadImage(p.url);const [x,y,w,h]=frame.slots[i].map((v,j)=>v*(j%2===0?frame.w:frame.h));const crop=imageCrop(img,w,h,adjustmentFor(i));ctx.drawImage(img,crop.x,crop.y,crop.sw,crop.sh,x,y,w,h);}
-      ctx.fillStyle='#354b3e';ctx.textAlign='center';ctx.font=`${Math.round(frame.w*.022)}px Georgia`;ctx.fillText(window.trainI18n?.t('VIỆT PHỤC · KỶ NIỆM TRÊN TÀU') || 'VIỆT PHỤC · KỶ NIỆM TRÊN TÀU',frame.w/2,frame.h*.976);
+      ctx.fillStyle='#354b3e';ctx.textAlign='center';ctx.font=`${Math.round(frame.w*.022)}px Cambria, 'Times New Roman', serif`;ctx.fillText(window.trainI18n?.t('VIỆT PHỤC · KỶ NIỆM TRÊN TÀU') || 'VIỆT PHỤC · KỶ NIỆM TRÊN TÀU',frame.w/2,frame.h*.976);
       const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));if(!blob)throw Error('Chưa thể xuất frame.');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`photobooth-viet-phuc-${frame.id}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);status.textContent='Frame đã sẵn sàng để tải.';
     }catch(error){status.textContent=error.message;}
   }
