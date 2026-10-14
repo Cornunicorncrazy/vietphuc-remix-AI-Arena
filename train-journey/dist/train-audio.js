@@ -16,7 +16,9 @@
   panel.className = 'train-sound-panel';
   panel.hidden = true;
   panel.innerHTML = '<p>ÂM THANH</p><label class="sound-master-row"><input type="checkbox" data-sound-enabled><span><b>Bật âm thanh</b><small>Tàu chạy và âm thanh không gian</small></span></label><div class="sound-volume-row"><label for="train-volume">Âm lượng <output id="train-volume-value" for="train-volume"></output></label><input id="train-volume" type="range" min="0" max="100" step="1"></div><p class="sound-section-heading">KHÔNG GIAN</p><label><input type="checkbox" data-ambient="rain"><span><b>Mưa rơi</b><small>Tiếng mưa và giọt nước</small></span></label><label><input type="checkbox" data-ambient="field"><span><b>Đồng lúa</b><small>Gió và côn trùng ngoài đồng</small></span></label><label><input type="checkbox" data-ambient="nature"><span><b>Chim & thiên nhiên</b><small>Chim hót, lá cây và dòng nước</small></span></label><small class="sound-panel-note">Có thể bật nhiều âm cùng lúc.</small>';
-  journey.append(button, panel);
+  const controlsMount = document.getElementById('site-controls') || journey;
+  controlsMount.append(button);
+  document.body.append(panel);
   const ambient = {rain: false, field: false, nature: false};
   try {
     const saved = JSON.parse(localStorage.getItem('train-ambient-sounds') || '{}');

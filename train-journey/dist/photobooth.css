@@ -72,3 +72,66 @@ html.mobile-landscape body.booth-open .booth-header{padding-right:66px}
 .booth-toast.visible{opacity:1;transform:translate(-50%,0)}
 @keyframes boothFadeIn{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
 
+/* Guidance banner for moving position and resizing photos in frame slots */
+.booth-adjust-banner{margin-bottom:12px;padding:12px 14px;background:#f8f6ed;border:1px solid #c9caa7;border-left:4px solid #986441;border-radius:6px;box-shadow:0 2px 8px #10231b14}
+.booth-adjust-banner-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.booth-adjust-banner-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:#354b3e;color:#fff8e8;border-radius:3px;font:700 9px/1.2 'Be Vietnam Pro',sans-serif;letter-spacing:0.8px;text-transform:uppercase}
+.booth-adjust-banner-sub{font:600 11px/1.2 'Be Vietnam Pro',sans-serif;color:#253c35}
+.booth-adjust-banner-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.booth-adjust-banner-item{font:400 10.5px/1.5 'Be Vietnam Pro',sans-serif;color:#556350}
+.booth-adjust-banner-item strong{color:#253c35;font-weight:600}
+@media(max-width:760px){.booth-adjust-banner-grid{grid-template-columns:1fr}}
+
+/* In-slot hover hint & drag feedback */
+.booth-frame-slot:has(canvas){position:relative}
+.booth-frame-slot:has(canvas)::after{content:'🖐 Kéo di chuyển · Cuộn phóng thu';position:absolute;bottom:4px;left:50%;transform:translateX(-50%) translateY(4px);background:#253c35e6;color:#fff8e8;padding:2px 7px;border-radius:12px;font:500 8.5px/1.2 'Be Vietnam Pro',sans-serif;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:5}
+.booth-frame-slot:has(canvas):hover::after,.booth-frame-slot:has(canvas):focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Zoom bar in slot picker editor */
+.booth-slot-zoom-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0 6px}
+.booth-zoom-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:28px;padding:2px 9px;border:1px solid #9ba88e;background:#faf7ee;color:#354b3e;border-radius:4px;font:600 11px 'Be Vietnam Pro',sans-serif;cursor:pointer;transition:background .15s ease}
+.booth-zoom-btn:hover{background:#ede8da;border-color:#7a8a6f}
+.booth-zoom-btn.reset{font-size:10px;color:#7a8370;background:transparent;border-style:dashed}
+.booth-zoom-val{font:700 11px 'Be Vietnam Pro',sans-serif;color:#253c35;min-width:44px;text-align:center}
+.booth-slot-hint{font-size:10px;line-height:1.4;color:#6b7664;text-align:center;margin:4px 0 10px}
+
+/* Aside experience guide panel non-obstruction */
+aside:nth-of-type(1),
+aside.experience-guide-panel{
+  max-width:min(320px,calc(100vw - 24px));
+  box-shadow:0 12px 36px #10231b4d;
+  pointer-events:auto;
+}
+
+/* Floating Generation Toast */
+.generation-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--theme-surface, #f3efe3);
+  color: var(--theme-ink, #253c35);
+  border: 1px solid var(--theme-border, #b8c0aa);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(20, 35, 27, 0.3);
+  animation: toast-slide-in 0.3s ease-out;
+  font: 12px/1.5 'Be Vietnam Pro', Arial, sans-serif;
+}
+.generation-toast button {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--theme-ink, #253c35);
+  color: var(--theme-surface, #f3efe3);
+  font: 600 11px 'Be Vietnam Pro', Arial, sans-serif;
+  cursor: pointer;
+}
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

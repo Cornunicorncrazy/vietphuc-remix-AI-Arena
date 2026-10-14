@@ -29,7 +29,8 @@
     return whitespace[1]+(result??text).normalize('NFC')+whitespace[3];
   }
   const switcher=document.createElement('div');switcher.className='language-switch';switcher.dataset.noTranslate='';switcher.setAttribute('role','group');switcher.setAttribute('aria-label','Ngôn ngữ / Language');
-  ['vi','en'].forEach(code=>{const b=document.createElement('button');b.type='button';b.textContent=code.toUpperCase();b.setAttribute('aria-label',code==='vi'?'Tiếng Việt':'English');b.addEventListener('click',()=>setLanguage(code));switcher.append(b);});document.body.append(switcher);
+  ['vi','en'].forEach(code=>{const b=document.createElement('button');b.type='button';b.textContent=code.toUpperCase();b.setAttribute('aria-label',code==='vi'?'Tiếng Việt':'English');b.addEventListener('click',()=>setLanguage(code));switcher.append(b);});
+  (document.getElementById('site-controls')||document.body).append(switcher);
   function syncText(node){const parent=node.parentElement;if(!parent||parent.closest('script,style,svg,[data-no-translate],textarea'))return;const current=node.nodeValue;let record=records.get(node);if(!record){record={original:current,applied:current};records.set(node,record);}else if(current!==record.applied){record.original=current;}const value=translate(record.original);record.applied=value;if(current!==value)node.nodeValue=value;}
   function syncElement(node){if(node.closest('[data-no-translate]'))return;let store=attributes.get(node);if(!store){store={};attributes.set(node,store);}for(const name of ['aria-label','title','alt','placeholder']){if(!node.hasAttribute(name))continue;const current=node.getAttribute(name);let record=store[name];if(!record)record=store[name]={original:current,applied:current};else if(current!==record.applied)record.original=current;const value=translate(record.original);record.applied=value;if(current!==value)node.setAttribute(name,value);}}
   const observer=new MutationObserver(()=>apply());

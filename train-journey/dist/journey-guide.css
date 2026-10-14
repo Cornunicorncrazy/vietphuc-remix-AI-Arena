@@ -5,7 +5,12 @@ body.journey-guide-active .journey-guide-reopen{display:none}
 body.quiz-open .journey-guide-reopen,body.interior-open .journey-guide-reopen,body.booth-open .journey-guide-reopen{display:none}
 body:has(.postal-overlay:not([hidden])) .journey-guide-reopen{display:none}
 .journey-guide-panel[hidden],.journey-guide-done[hidden]{display:none}
-.journey-guide-panel{position:fixed;z-index:220;width:min(320px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:17px 20px 19px;border:1px solid var(--theme-border,#c5b895);border-radius:12px;background:var(--theme-surface,#f3efe3);color:var(--theme-ink,#253c35);box-shadow:0 18px 50px #14251c66}
+.journey-guide-panel{position:fixed;z-index:220;width:min(320px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:visible;padding:17px 20px 19px;border:1px solid var(--theme-border,#c5b895);border-radius:12px;background:var(--theme-surface,#f3efe3);color:var(--theme-ink,#253c35);box-shadow:0 18px 50px #14251c66;transition:left .18s ease-out,top .18s ease-out}
+.journey-guide-arrow{position:absolute;width:12px;height:12px;background:var(--theme-surface,#f3efe3);border:1px solid var(--theme-border,#c5b895);transform:rotate(45deg);pointer-events:none;z-index:1}
+.journey-guide-panel[data-placement="top"] .journey-guide-arrow{bottom:-6.5px;left:var(--arrow-left,50%);margin-left:-6px;border-top:none;border-left:none}
+.journey-guide-panel[data-placement="bottom"] .journey-guide-arrow{top:-6.5px;left:var(--arrow-left,50%);margin-left:-6px;border-bottom:none;border-right:none}
+.journey-guide-panel[data-placement="right"] .journey-guide-arrow{left:-6.5px;top:var(--arrow-top,50%);margin-top:-6px;border-top:none;border-right:none}
+.journey-guide-panel[data-placement="left"] .journey-guide-arrow{right:-6.5px;top:var(--arrow-top,50%);margin-top:-6px;border-bottom:none;border-left:none}
 .journey-guide-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .journey-guide-progress{color:var(--theme-accent,#986441);font-size:9px;font-weight:700;letter-spacing:1px}
 .journey-guide-skip{border:0;background:transparent;color:var(--theme-muted,#687463);font:600 10px 'Be Vietnam Pro',Arial,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}

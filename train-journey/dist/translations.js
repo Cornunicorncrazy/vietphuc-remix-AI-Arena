@@ -35,4 +35,12 @@ window.trainTranslations = Object.fromEntries([
 ['Đang chuẩn bị frame để chia sẻ…','Preparing frame to share…'],
 ['Tải ảnh PNG','Download PNG'],
 ['Chia sẻ khoảnh khắc kỷ niệm cùng tà áo Việt phục đến bạn bè hoặc tải về máy.','Share your heritage portrait moments with friends or download to your device.'],
+['💡 Mẹo căn chỉnh ảnh','💡 Photo adjustment tips'],
+['Di chuyển vị trí: Kéo ảnh trong ô để căn góc đẹp nhất.','Reposition: Drag the photo inside each slot to frame it perfectly.'],
+['Chỉnh kích cỡ: Cuộn chuột hoặc chụm 2 ngón (phím + / -) để phóng to / thu nhỏ.','Resize: Scroll or pinch (or use + / - keys) to zoom in and out.'],
+['Nhấn giữ và kéo ảnh trong từng ô để căn góc đẹp nhất; cuộn chuột hoặc chụm 2 ngón để phóng to / thu nhỏ.','Drag photos in slots to reposition; scroll or pinch to zoom in/out.'],
+['Thu nhỏ ảnh','Zoom out'],
+['Phóng to ảnh','Zoom in'],
+['Kích cỡ','Zoom'],
+['Đặt lại vị trí và kích cỡ','Reset position and size'],
 ]);

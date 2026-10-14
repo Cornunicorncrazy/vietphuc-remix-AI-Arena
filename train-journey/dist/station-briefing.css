@@ -1,0 +1,322 @@
+/* Station Briefing Modal - Welcome Guide to the 10 Carriages */
+.station-briefing-overlay {
+  display: none !important;
+}
+.station-briefing-reopen {
+  display: none !important;
+}
+@keyframes briefing-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.station-briefing-card {
+  position: relative;
+  width: min(1080px, 100%);
+  max-height: min(92vh, 880px);
+  display: flex;
+  flex-direction: column;
+  background: var(--theme-surface, #f3efe3);
+  color: var(--theme-ink, #253c35);
+  border: 1px solid var(--theme-border, #c5b895);
+  border-radius: 14px;
+  box-shadow: 0 24px 70px rgba(16, 35, 27, 0.45);
+  overflow: hidden;
+  animation: briefing-scale-up .25s ease-out;
+}
+@keyframes briefing-scale-up {
+  from { opacity: 0; transform: scale(.96) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.station-briefing-header {
+  position: relative;
+  padding: 24px 30px 18px;
+  border-bottom: 1px solid var(--theme-border, #c5b895);
+  background: color-mix(in srgb, var(--theme-surface, #f3efe3) 94%, transparent);
+}
+.station-briefing-kicker {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  color: var(--theme-accent, #986441);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.station-briefing-title {
+  margin: 0 0 6px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(23px, 2.8vw, 32px);
+  font-weight: 500;
+  color: var(--theme-ink, #253c35);
+  letter-spacing: normal;
+  line-height: 1.25;
+}
+.station-briefing-subtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--theme-muted, #687463);
+  max-width: 740px;
+}
+.station-briefing-close {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--theme-border, #c5b895);
+  border-radius: 50%;
+  background: var(--theme-surface, #f3efe3);
+  color: var(--theme-ink, #253c35);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.station-briefing-close:hover {
+  background: color-mix(in srgb, var(--theme-border, #c5b895) 30%, var(--theme-surface, #f3efe3));
+  transform: rotate(90deg);
+}
+.station-briefing-close svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.station-briefing-grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+  background: color-mix(in srgb, var(--theme-paper, #eeede3) 40%, var(--theme-surface, #f3efe3));
+}
+
+.briefing-card {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 17px;
+  border: 1px solid color-mix(in srgb, var(--theme-border, #c5b895) 75%, transparent);
+  border-radius: 9px;
+  background: var(--theme-surface, #f3efe3);
+  box-shadow: 0 2px 7px rgba(37, 60, 53, 0.04);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.briefing-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--theme-accent, #986441);
+  box-shadow: 0 8px 20px rgba(37, 60, 53, 0.08);
+}
+.briefing-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+.briefing-card-num {
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--theme-accent, #986441);
+  text-transform: uppercase;
+}
+.briefing-card-code {
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-muted, #687463);
+  font-size: 9px;
+  letter-spacing: .8px;
+}
+.briefing-card-name {
+  margin: 0 0 6px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--theme-ink, #253c35);
+  line-height: 1.3;
+}
+.briefing-card-desc {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--theme-muted, #687463);
+  flex: 1;
+}
+.briefing-card-activity {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--theme-border, #c5b895) 28%, var(--theme-surface, #f3efe3));
+  border: 1px solid color-mix(in srgb, var(--theme-border, #c5b895) 45%, transparent);
+  color: var(--theme-ink, #253c35);
+  font-size: 11px;
+  font-weight: 600;
+}
+.briefing-card-activity svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--theme-accent, #986441);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.station-briefing-footer {
+  padding: 16px 30px;
+  border-top: 1px solid var(--theme-border, #c5b895);
+  background: var(--theme-surface, #f3efe3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.station-briefing-hint {
+  font-size: 11px;
+  color: var(--theme-muted, #687463);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.station-briefing-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 28px;
+  border-radius: 6px;
+  background: #9f4538;
+  color: #fff8e9;
+  border: 1px solid #803528;
+  font: 700 12.5px 'Be Vietnam Pro', Arial, sans-serif;
+  letter-spacing: .5px;
+  cursor: pointer;
+  transition: background .2s, transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 14px rgba(159, 69, 56, 0.32);
+}
+.station-briefing-start:hover {
+  background: #803528;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(159, 69, 56, 0.45);
+}
+.station-briefing-start svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform .2s ease;
+}
+.station-briefing-start:hover svg {
+  transform: translateX(3px);
+}
+
+/* Reopen trigger button inside site-controls or standalone */
+.station-briefing-reopen {
+  order: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 11px;
+  height: 36px;
+  border-radius: 20px;
+  border: 1px solid var(--theme-border, #b8c0aa);
+  background: var(--theme-surface, #f3efe3);
+  color: var(--theme-ink, #253c35);
+  font: 600 11px 'Be Vietnam Pro', Arial, sans-serif;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+  white-space: nowrap;
+}
+.station-briefing-reopen:hover {
+  background: color-mix(in srgb, var(--theme-border, #b8c0aa) 28%, var(--theme-surface, #f3efe3));
+  border-color: var(--theme-accent, #986441);
+}
+.station-briefing-reopen svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 760px) {
+  .station-briefing-overlay {
+    padding: 10px;
+  }
+  .station-briefing-header {
+    padding: 16px 18px 14px;
+  }
+  .station-briefing-title {
+    font-size: 21px;
+    padding-right: 32px;
+  }
+  .station-briefing-subtitle {
+    font-size: 11.5px;
+  }
+  .station-briefing-close {
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+  }
+  .station-briefing-grid {
+    padding: 14px 16px;
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+  .station-briefing-footer {
+    padding: 14px 18px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .station-briefing-start {
+    justify-content: center;
+    width: 100%;
+    padding: 12px 18px;
+  }
+  .station-briefing-hint {
+    text-align: center;
+    justify-content: center;
+  }
+  .station-briefing-reopen span {
+    display: none;
+  }
+  .station-briefing-reopen {
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    border-radius: 50%;
+  }
+}
+
+.mobile-landscape .station-briefing-card {
+  max-height: 94vh;
+}
+.mobile-landscape .station-briefing-header {
+  padding: 12px 18px 8px;
+}
+.mobile-landscape .station-briefing-title {
+  font-size: 18px;
+}
+.mobile-landscape .station-briefing-grid {
+  grid-template-columns: repeat(2, 1fr);
+  padding: 10px 18px;
+}
+.mobile-landscape .station-briefing-footer {
+  padding: 10px 18px;
+}
