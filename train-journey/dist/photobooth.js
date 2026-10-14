@@ -79,7 +79,7 @@
   const button=(text,fn,cls='booth-button')=>{const node=el('button',cls,text);node.type='button';node.addEventListener('click',fn);return node;};
   const note=text=>el('p','booth-note',text);
   function stopCamera(){cameraToken++;stream?.getTracks().forEach(track=>track.stop());stream=null;}
-  function close(){stopCamera();overlay.hidden=true;document.body.classList.remove('booth-open');inactive.forEach(({node,inert})=>node.inert=inert);returnFocus?.focus({preventScroll:true});}
+  function close(){stopCamera();overlay.querySelectorAll('.booth-share-overlay,.booth-toast').forEach(m=>m.remove());overlay.hidden=true;document.body.classList.remove('booth-open');inactive.forEach(({node,inert})=>node.inert=inert);returnFocus?.focus({preventScroll:true});}
   function changeStep(n){stopCamera();step=n;if(n!==4)activeSlot=null;status.textContent='';render();overlay.querySelector('.booth-card').scrollTop=0;body.querySelector('h3')?.focus({preventScroll:true});}
   function heading(title,description){const h=el('h3','',title);h.tabIndex=-1;body.append(h,note(description));}
   function nav(nextText,nextFn,disabled=false){const row=el('div','booth-actions');if(step>0)row.append(button('← Quay lại',()=>changeStep(step-1),'booth-button secondary'));const next=button(nextText,nextFn,'booth-button primary');next.disabled=disabled;row.append(next);body.append(row);}
@@ -170,9 +170,40 @@
       slot.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();activeSlot=index;render();return;}const current=adjustmentFor(index);if(event.key==='+'||event.key==='='){setAdjustment(index,{zoom:clamp(current.zoom*1.1,1,3)});}else if(event.key==='-'){setAdjustment(index,{zoom:clamp(current.zoom/1.1,1,3)});}else if(event.key.startsWith('Arrow')){const axis=event.key==='ArrowLeft'||event.key==='ArrowRight'?'x':'y',direction=event.key==='ArrowLeft'||event.key==='ArrowUp'?-1:1;setAdjustment(index,{[axis]:clamp(current[axis]+direction*.08,-1,1)});}else return;event.preventDefault();paint();});
     }).catch(()=>{status.textContent='Không thể hiển thị ảnh trong ô. Hãy chọn ảnh khác.';});
   }
+  let qrCodeDataUrl=null;
+  async function getQrCode(){
+    if(qrCodeDataUrl)return qrCodeDataUrl;
+    try{
+      const siteUrl=window.location.origin+window.location.pathname;
+      const res=await fetch(`/api/qrcode?text=${encodeURIComponent(siteUrl)}`);
+      if(res.ok){
+        const data=await res.json();
+        if(data?.dataUrl){qrCodeDataUrl=data.dataUrl;return qrCodeDataUrl;}
+      }
+    }catch(_){}
+    return null;
+  }
+  getQrCode();
+  function showToast(text){
+    const old=overlay.querySelector('.booth-toast');if(old)old.remove();
+    const toast=el('div','booth-toast',text);overlay.append(toast);
+    requestAnimationFrame(()=>toast.classList.add('visible'));
+    setTimeout(()=>{toast.classList.remove('visible');setTimeout(()=>toast.remove(),400);},3000);
+  }
   function renderComposition(){
     const layout=el('div','booth-layout'),preview=el('div','booth-frame-preview');preview.style.aspectRatio=`${frame.w}/${frame.h}`;preview.style.background=frame.color;
     frame.slots.forEach((s,i)=>{const slot=el('div','booth-frame-slot');Object.assign(slot.style,{left:s[0]*100+'%',top:s[1]*100+'%',width:s[2]*100+'%',height:s[3]*100+'%'});slot.dataset.slotIndex=i;slot.tabIndex=0;slot.setAttribute('role','button');const p=photos.find(p=>p.id===placements[i]);slot.setAttribute('aria-label',p?`Ô ${i+1}: ${p.name}. Nhấn để chọn ảnh khác; kéo để căn ảnh.`:`Ô ${i+1}: nhấn để chọn ảnh`);if(p){const canvas=el('canvas');canvas.width=Math.round(frame.w*s[2]);canvas.height=Math.round(frame.h*s[3]);slot.append(canvas);editSlot(i,slot,canvas,p);}else{slot.append(el('span','',`Ô ${i+1}`));slot.addEventListener('click',()=>{activeSlot=i;render();});slot.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();activeSlot=i;render();}});}preview.append(slot);});preview.append(el('div','booth-frame-title','VIỆT PHỤC · KỶ NIỆM TRÊN TÀU'));
+    const qrBadge=el('div','booth-frame-qr');
+    qrBadge.setAttribute('aria-label','Mã QR chuyến tàu: Quét để lên tàu');
+    getQrCode().then(url=>{
+      if(url){
+        const qrImg=el('img','booth-frame-qr-img');qrImg.src=url;qrImg.alt='QR';
+        const qrTexts=el('div','booth-frame-qr-texts');
+        qrTexts.append(el('span','booth-frame-qr-title','QUÉT ĐỂ LÊN TÀU'),el('span','booth-frame-qr-sub','TÀU VIỆT PHỤC'));
+        qrBadge.append(qrImg,qrTexts);
+      }
+    });
+    preview.append(qrBadge);
     const choices=el('div','booth-slot-choices');choices.append(note('Chạm vào ô để chọn ảnh. Kéo ảnh để căn vị trí; cuộn chuột hoặc chụm hai ngón để phóng to, thu nhỏ.'));
     if(activeSlot!==null){const picker=el('section','booth-slot-picker');picker.append(el('h4','',`Chọn ảnh cho ô ${activeSlot+1}`));const current=photos.find(p=>p.id===placements[activeSlot]);if(current){const s=frame.slots[activeSlot],editor=el('div','booth-slot-editor'),canvas=el('canvas');editor.dataset.slotIndex=activeSlot;editor.style.aspectRatio=`${frame.w*s[2]}/${frame.h*s[3]}`;editor.tabIndex=0;editor.setAttribute('role','button');editor.setAttribute('aria-label',`Căn ${current.name}: kéo để di chuyển, cuộn chuột hoặc chụm hai ngón để phóng thu`);canvas.width=Math.round(frame.w*s[2]);canvas.height=Math.round(frame.h*s[3]);editor.append(canvas);picker.append(editor);editSlot(activeSlot,editor,canvas,current,false);}const list=el('div','booth-slot-photo-list');photos.forEach(p=>{const option=button('',()=>placePhoto(activeSlot,p.id),'booth-slot-photo');option.setAttribute('aria-label',`Chọn ${p.name} cho ô ${activeSlot+1}`);option.append(image(p.url,p.name),el('span','',p.name));list.append(option);});picker.append(list);
       const upload=el('label','booth-upload','Tải ảnh mới');const input=el('input');input.type='file';input.accept='image/jpeg,image/png,image/webp';input.setAttribute('aria-label',`Tải ảnh mới cho ô ${activeSlot+1}`);input.addEventListener('change',()=>{const target=activeSlot;importPhotos([...input.files],target);input.value='';});upload.append(input);picker.append(upload);
@@ -180,15 +211,136 @@
       picker.append(button('Đóng',()=>{activeSlot=null;render();},'booth-button secondary'));choices.append(picker);
     }
     const frameComplete=frame.slots.every((_,i)=>photos.some(p=>p.id===placements[i]));
+    const share=button('Chia sẻ frame',openShareModal,'booth-button primary');share.disabled=!frameComplete;
     const download=button('Tải frame PNG',exportFrame,'booth-button primary');download.disabled=!frameComplete;
     const continueJourney=button('Đi tiếp: Toa bưu điện →',()=>{close();window.showTrainExperienceIntro?.(2);},'booth-button primary');continueJourney.disabled=!frameComplete;
-    choices.append(download,button('Thêm ảnh / chụp lại',()=>changeStep(1)),button('Thử trang phục khác',()=>changeStep(2)),continueJourney);layout.append(preview,choices);body.append(layout);
+    choices.append(share,download,button('Thêm ảnh / chụp lại',()=>changeStep(1)),button('Thử trang phục khác',()=>changeStep(2)),continueJourney);layout.append(preview,choices);body.append(layout);
+  }
+  async function generateFrameExport(){
+    const c=document.createElement('canvas');c.width=frame.w;c.height=frame.h;const ctx=c.getContext('2d');ctx.fillStyle=frame.color;ctx.fillRect(0,0,c.width,c.height);
+    for(let i=0;i<frame.slots.length;i++){
+      const p=photos.find(p=>p.id===placements[i]);if(!p)throw Error('Hãy chọn ảnh cho tất cả các ô.');
+      const img=await loadImage(p.url);const [x,y,w,h]=frame.slots[i].map((v,j)=>v*(j%2===0?frame.w:frame.h));
+      const crop=imageCrop(img,w,h,adjustmentFor(i));ctx.drawImage(img,crop.x,crop.y,crop.sw,crop.sh,x,y,w,h);
+    }
+    ctx.fillStyle='#354b3e';ctx.textAlign='center';ctx.font=`${Math.round(frame.w*.022)}px Cambria, 'Times New Roman', serif`;
+    ctx.fillText(window.trainI18n?.t('VIỆT PHỤC · KỶ NIỆM TRÊN TÀU') || 'VIỆT PHỤC · KỶ NIỆM TRÊN TÀU',frame.w/2,frame.h*.976);
+    try{
+      const qrUrl=await getQrCode();
+      if(qrUrl){
+        const qrImg=await loadImage(qrUrl);
+        const qrDim=Math.round(frame.w*0.075);
+        const p=Math.max(6,Math.round(frame.w*0.008));
+        const fontSize=Math.max(9,Math.round(frame.w*0.015));
+        const textW=Math.round(fontSize*6.5);
+        const badgeW=qrDim+textW+p*3;
+        const badgeH=qrDim+p*2;
+        const marginX=Math.round(frame.w*0.03);
+        const marginY=Math.round(frame.h*0.018);
+        const badgeX=frame.w-badgeW-marginX;
+        const badgeY=frame.h-badgeH-marginY;
+        ctx.save();
+        ctx.beginPath();
+        if(ctx.roundRect)ctx.roundRect(badgeX,badgeY,badgeW,badgeH,6);
+        else ctx.rect(badgeX,badgeY,badgeW,badgeH);
+        ctx.fillStyle='#fcfbf7';ctx.fill();
+        ctx.strokeStyle='#d8d2be';ctx.lineWidth=Math.max(1,Math.round(frame.w*0.0015));ctx.stroke();
+        ctx.drawImage(qrImg,badgeX+p,badgeY+p,qrDim,qrDim);
+        ctx.textAlign='left';ctx.textBaseline='middle';
+        ctx.fillStyle='#253c35';ctx.font=`600 ${fontSize}px 'Be Vietnam Pro', Arial, sans-serif`;
+        ctx.fillText('QUÉT ĐỂ LÊN TÀU',badgeX+qrDim+p*2,badgeY+p+qrDim*0.35);
+        ctx.fillStyle='#788470';ctx.font=`500 ${Math.round(fontSize*0.8)}px 'Be Vietnam Pro', Arial, sans-serif`;
+        ctx.fillText('TÀU VIỆT PHỤC',badgeX+qrDim+p*2,badgeY+p+qrDim*0.72);
+        ctx.restore();
+      }
+    }catch(_){}
+    const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
+    if(!blob)throw Error('Chưa thể xuất frame.');
+    return {canvas:c,blob};
   }
   async function exportFrame(){
-    try{const c=document.createElement('canvas');c.width=frame.w;c.height=frame.h;const ctx=c.getContext('2d');ctx.fillStyle=frame.color;ctx.fillRect(0,0,c.width,c.height);
-      for(let i=0;i<frame.slots.length;i++){const p=photos.find(p=>p.id===placements[i]);if(!p)throw Error('Hãy chọn ảnh cho tất cả các ô.');const img=await loadImage(p.url);const [x,y,w,h]=frame.slots[i].map((v,j)=>v*(j%2===0?frame.w:frame.h));const crop=imageCrop(img,w,h,adjustmentFor(i));ctx.drawImage(img,crop.x,crop.y,crop.sw,crop.sh,x,y,w,h);}
-      ctx.fillStyle='#354b3e';ctx.textAlign='center';ctx.font=`${Math.round(frame.w*.022)}px Cambria, 'Times New Roman', serif`;ctx.fillText(window.trainI18n?.t('VIỆT PHỤC · KỶ NIỆM TRÊN TÀU') || 'VIỆT PHỤC · KỶ NIỆM TRÊN TÀU',frame.w/2,frame.h*.976);
-      const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));if(!blob)throw Error('Chưa thể xuất frame.');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`photobooth-viet-phuc-${frame.id}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);status.textContent='Frame đã sẵn sàng để tải.';
+    try{
+      status.textContent='Đang tạo ảnh frame…';
+      const {blob}=await generateFrameExport();
+      const url=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=url;a.download=`photobooth-viet-phuc-${frame.id}.png`;a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),10000);status.textContent='Frame đã sẵn sàng để tải.';
+    }catch(error){status.textContent=error.message;}
+  }
+  async function openShareModal(){
+    try{
+      status.textContent='Đang chuẩn bị frame để chia sẻ…';
+      const {blob}=await generateFrameExport();
+      status.textContent='';
+      const shareUrl=window.location.origin+window.location.pathname;
+      const shareTitle='Vé Tàu Việt Phục — Chuyến tàu Việt Nam';
+      const shareText='Kỷ niệm Việt phục trên chuyến tàu di sản Việt Nam! Khám phá và tạo ảnh kỷ niệm của bạn tại đây:';
+      overlay.querySelectorAll('.booth-share-overlay').forEach(m=>m.remove());
+      const modal=el('div','booth-share-overlay');
+      const card=el('div','booth-share-card');
+      card.setAttribute('role','dialog');
+      card.setAttribute('aria-modal','true');
+      card.setAttribute('aria-label','Chia sẻ kỷ niệm chuyến tàu');
+      const header=el('div','booth-share-header');
+      const titleH=el('h4','','Chia sẻ kỷ niệm chuyến tàu');
+      const closeBtn=button('×',()=>{URL.revokeObjectURL(thumbUrl);modal.remove();},'booth-share-close');
+      closeBtn.setAttribute('aria-label','Đóng cửa sổ chia sẻ');
+      header.append(titleH,closeBtn);
+      const previewWrap=el('div','booth-share-preview');
+      const thumbUrl=URL.createObjectURL(blob);
+      const thumb=image(thumbUrl,'Khung ảnh kỷ niệm');
+      previewWrap.append(thumb);
+      const intro=el('p','booth-share-intro','Chia sẻ khoảnh khắc kỷ niệm cùng tà áo Việt phục đến bạn bè hoặc tải về máy.');
+      const actions=el('div','booth-share-actions');
+      const file=new File([blob],`photobooth-viet-phuc-${frame.id}.png`,{type:'image/png'});
+      const canShare=!!navigator.share;
+      const canShareFiles=canShare&&navigator.canShare&&navigator.canShare({files:[file]});
+      if(canShare){
+        const nativeBtn=button('',async()=>{
+          try{
+            if(canShareFiles){
+              await navigator.share({title:shareTitle,text:shareText,url:shareUrl,files:[file]});
+            }else{
+              await navigator.share({title:shareTitle,text:shareText,url:shareUrl});
+            }
+          }catch(err){
+            if(err.name!=='AbortError')showToast('Không thể kích hoạt chia sẻ thiết bị.');
+          }
+        },'booth-share-btn native');
+        nativeBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span>Chia sẻ qua thiết bị</span>`;
+        actions.append(nativeBtn);
+      }
+      const fbLink=el('a','booth-share-btn facebook');
+      fbLink.href=`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      fbLink.target='_blank';fbLink.rel='noopener noreferrer';
+      fbLink.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg><span>Facebook</span>`;
+      actions.append(fbLink);
+      const zaloLink=el('a','booth-share-btn zalo');
+      zaloLink.href=`https://sp.zalo.me/plugins/share?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareTitle)}`;
+      zaloLink.target='_blank';zaloLink.rel='noopener noreferrer';
+      zaloLink.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.76 1.4 5.22 3.6 6.84L5 22l4.4-2.2c.85.22 1.74.34 2.6.34 5.52 0 10-4.03 10-9s-4.48-9-10-9zm-1.8 12.3h-2.1v-5.6h2.1v5.6zm4.8 0h-3.9v-5.6h2.1v3.9h1.8v1.7z"/></svg><span>Zalo</span>`;
+      actions.append(zaloLink);
+      const copyBtn=button('',async()=>{
+        try{
+          await navigator.clipboard.writeText(shareUrl);
+          showToast('✓ Đã sao chép liên kết chuyến tàu!');
+        }catch(_){
+          const inp=document.createElement('input');inp.value=shareUrl;document.body.appendChild(inp);inp.select();document.execCommand('copy');inp.remove();
+          showToast('✓ Đã sao chép liên kết chuyến tàu!');
+        }
+      },'booth-share-btn copy');
+      copyBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Sao chép liên kết</span>`;
+      actions.append(copyBtn);
+      const dlBtn=button('',()=>{
+        const a=document.createElement('a');a.href=thumbUrl;a.download=`photobooth-viet-phuc-${frame.id}.png`;a.click();
+        showToast('✓ Đang tải ảnh frame về máy...');
+      },'booth-share-btn download');
+      dlBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Tải ảnh PNG</span>`;
+      actions.append(dlBtn);
+      card.append(header,previewWrap,intro,actions);modal.append(card);
+      modal.addEventListener('click',e=>{if(e.target===modal){URL.revokeObjectURL(thumbUrl);modal.remove();}});
+      overlay.append(modal);
+      window.trainI18n?.apply();
     }catch(error){status.textContent=error.message;}
   }
   function render(){
@@ -198,7 +350,20 @@
     if(step===0){heading('Chọn một khung kỷ niệm','Các frame dưới đây là mẫu giữ chỗ. Frame thiết kế riêng sẽ được bổ sung sau.');const list=el('div','booth-frame-list');frames.forEach(f=>{const card=button('',()=>{if(frame.id!==f.id){placements=[];adjustments=[];activeSlot=null;}frame=f;render();});card.className='booth-frame-option';card.setAttribute('aria-label',`Chọn frame ${f.name}`);card.setAttribute('aria-pressed',String(frame.id===f.id));card.append(miniature(f),el('strong','',f.name),el('span','',f.label));list.append(card);});body.append(list);nav('Tiếp tục →',()=>changeStep(1));}
     if(step===1){heading('Giữ lại một khoảnh khắc','Chọn một ảnh rõ mặt và trang phục hiện tại. Bạn có thể thêm nhiều ảnh để xếp vào frame.');const actions=el('div','booth-source-actions');actions.append(button('Mở camera',startCamera,'booth-button primary'),uploadControl('Tải ảnh lên'));body.append(actions,note('JPG, PNG hoặc WebP · tối đa 12 MB / ảnh · tối đa 12 ảnh. Ảnh được giữ trong phiên này; chỉ gửi để tạo ảnh khi bạn xác nhận.'),el('div','booth-camera'));if(photos.length){body.append(renderPhotos());}nav('Chọn trang phục →',()=>changeStep(2),!selectedPhoto());}
     if(step===2){heading('Một catalogue, nhiều nét đẹp','Chọn mẫu trang phục dựng lại từ ảnh bạn gửi. Một số chi tiết có thể khác ảnh gốc.');renderCatalogue();nav('Xác nhận lựa chọn →',()=>changeStep(3),!outfit);}
-    if(step===3){heading('Sẵn sàng cho một diện mạo mới','Ảnh của bạn và mẫu trang phục sẽ được gửi tới dịch vụ tạo ảnh OpenAI khi kết nối đã sẵn sàng và bạn xác nhận.');const summary=el('div','booth-confirmation');const p=selectedPhoto();if(p)summary.append(image(p.url,p.name));const detail=el('div');if(outfit?.imageSrc){const garment=image(outfit.imageSrc,outfit.name);garment.className='booth-selected-garment';detail.append(garment);}detail.append(el('h4','',outfit?.name||''),note(outfit?.description||''),note(`Frame: ${frame.name} · ${frame.slots.length} ô ảnh`));summary.append(detail);body.append(summary);const ready=!!window.photoboothConfig?.generationEndpoint&&!!outfit?.imageSrc;body.append(note(ready?'Tạo một ảnh mỗi lần. Bạn có thể quay lại để thử thêm trang phục.':outfit?.imageSrc?'Đang chờ kết nối API OpenAI. Chưa có ảnh AI nào được tạo.':'Đang chờ API OpenAI và ảnh trang phục thật. Chưa có ảnh AI nào được tạo.'));const create=button(busy?'Đang tạo ảnh…':ready?'Xác nhận và tạo ảnh':outfit?.imageSrc?'Tạo ảnh · Chờ kết nối API':'Tạo ảnh · Chờ ảnh trang phục',generate,'booth-button primary');create.disabled=busy||!ready;body.append(create,button('Thử xếp ảnh gốc vào frame',()=>changeStep(4),'booth-button secondary'));body.append(button('← Quay lại ảnh của bạn',()=>changeStep(1),'booth-button secondary'),button('← Chọn lại trang phục',()=>changeStep(2),'booth-button secondary'));}
+    if(step===3){
+      heading('Sẵn sàng cho một diện mạo mới','Ảnh của bạn và mẫu trang phục sẽ được gửi tới dịch vụ tạo ảnh khi kết nối đã sẵn sàng và bạn xác nhận.');
+      const summary=el('div','booth-confirmation');const p=selectedPhoto();if(p)summary.append(image(p.url,p.name));
+      const detail=el('div');if(outfit?.imageSrc){const garment=image(outfit.imageSrc,outfit.name);garment.className='booth-selected-garment';detail.append(garment);}
+      detail.append(el('h4','',outfit?.name||''),note(outfit?.description||''),note(`Frame: ${frame.name} · ${frame.slots.length} ô ảnh`));
+      summary.append(detail);body.append(summary);
+      const ready=!!window.photoboothConfig?.generationEndpoint&&!!outfit?.imageSrc;
+      body.append(note(ready?'Tạo một ảnh mỗi lần. Bạn có thể quay lại để thử thêm trang phục.':'Bạn có thể kết nối tạo ảnh AI hoặc tiếp tục xếp ảnh của bạn vào khung kỷ niệm và chia sẻ.'));
+      const create=button(busy?'Đang tạo ảnh…':ready?'Xác nhận và tạo ảnh':outfit?.imageSrc?'Tạo ảnh · Chờ kết nối API':'Tạo ảnh · Chờ ảnh trang phục',generate,'booth-button primary');
+      create.disabled=busy||!ready;
+      const proceedToFrame=button(ready?'Thử xếp ảnh gốc vào frame':'Tiếp tục xếp ảnh vào frame →',()=>changeStep(4),ready?'booth-button secondary':'booth-button primary');
+      body.append(create,proceedToFrame);
+      body.append(button('← Quay lại ảnh của bạn',()=>changeStep(1),'booth-button secondary'),button('← Chọn lại trang phục',()=>changeStep(2),'booth-button secondary'));
+    }
     if(step===4){heading('Xếp những khoảnh khắc của bạn','Chọn ảnh cho từng ô, xem trước rồi tải frame về. Những ảnh gốc và ảnh AI được ghi nhãn riêng.');renderComposition();}
   }
   window.openTrainPhotobooth=()=>{if(!window.trainQuizComplete)return;if(overlay.hidden){returnFocus=document.activeElement;inactive=[...journey.children].filter(node=>node!==overlay).map(node=>({node,inert:node.inert}));inactive.forEach(({node})=>node.inert=true);overlay.inert=false;overlay.hidden=false;document.body.classList.add('booth-open');}window.go?.(1);render();overlay.querySelector('.booth-close').focus({preventScroll:true});};
