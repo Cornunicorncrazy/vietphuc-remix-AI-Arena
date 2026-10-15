@@ -86,21 +86,6 @@
     <h2 class="journey-guide-title"></h2><p class="journey-guide-body"></p>
     <button type="button" class="journey-guide-done" hidden></button>`;
   document.body.append(panel);
-  const replay = {};
-  const headers = {booth:'.booth-header', postal:'.postal-header', qa:'.interior-header'};
-  for (const [key, overlay] of Object.entries(overlays)) {
-    // The quiz result has no guide step, so a replay button there is inert.
-    if (key === 'quiz') continue;
-    const header = overlay.querySelector(headers[key]);
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'experience-guide-replay';
-    button.textContent = '?';
-    button.setAttribute('data-no-translate', '');
-    if (key === 'qa') button.hidden = true;
-    header.insertBefore(button, header.lastElementChild);
-    replay[key] = button;
-  }
   const skip = panel.querySelector('.journey-guide-skip');
   const done = panel.querySelector('.journey-guide-done');
   let currentKey = '';
@@ -270,9 +255,6 @@
   }
   function render() {
     const lang = language();
-    Object.values(replay).forEach(button => button.setAttribute('aria-label', lang === 'en' ? 'Show experience guide' : 'Xem hướng dẫn trải nghiệm'));
-    const qaGuideAvailable = !!overlays.qa.querySelector('.tet-qa-host:not([hidden]) .tet-qa-form');
-    if (replay.qa.hidden === qaGuideAvailable) replay.qa.hidden = !qaGuideAvailable;
     const info = context();
     if (!info || !info.target || (seen(info.key) && forcedKey !== info.key)) { hide(); return; }
     if (panel.parentElement !== overlays[info.key]) overlays[info.key].append(panel);
@@ -304,9 +286,6 @@
   }
   skip.addEventListener('click', finish);
   done.addEventListener('click', finish);
-  for (const [key, button] of Object.entries(replay)) {
-    button.addEventListener('click', () => { forcedKey = key; currentStep = ''; render(); });
-  }
   window.addEventListener('train-language-changed', schedule);
   window.addEventListener('resize', position);
   window.addEventListener('scroll', position, true);

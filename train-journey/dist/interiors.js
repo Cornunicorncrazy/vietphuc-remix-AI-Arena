@@ -2,6 +2,15 @@
   const journey = document.querySelector('.journey');
   const cars = [...document.querySelectorAll('#train-track .train-car')];
   if (!journey || !cars.length) return;
+  const localizedCarriageName = n => window.trainI18n?.language === 'en' ? carriageNamesEn[n] : carriageNames[n];
+  function updateCarLabels() {
+    const english = window.trainI18n?.language === 'en';
+    cars.forEach((car, n) => {
+      car.setAttribute('aria-label', n===cars.length-1
+        ? `${localizedCarriageName(n)}; ${english ? 'click to hear the horn' : 'bấm để nghe còi tàu'}`
+        : `${localizedCarriageName(n)}; ${english ? carriageDescriptionsEn[n] : carriageDescriptions[n]}; ${english ? 'click to explore' : 'bấm để khám phá'}`);
+    });
+  }
   document.querySelector('#train-track svg').setAttribute('role', 'group');
   const overlay = document.createElement('div');
   overlay.className = 'interior-overlay';
@@ -154,7 +163,7 @@
     }
     window.go?.(n);
     const detail = experienceDetail(n);
-    const resolvedTitle = historyMeta[n]?.title || detail?.title || cars[n]?.dataset?.carName || '';
+    const resolvedTitle = historyMeta[n]?.title || detail?.title || localizedCarriageName(n) || '';
     title.textContent = resolvedTitle.normalize('NFC');
     description.textContent = detail?.description || historyMeta[n]?.description || '';
     status.hidden = true;
@@ -211,7 +220,7 @@
   cars.forEach((car, n) => {
     car.setAttribute('role', 'button');
     car.setAttribute('aria-haspopup', n===cars.length-1 ? 'false' : 'dialog');
-    car.setAttribute('aria-label', n===cars.length-1?`${car.dataset.carName}; bấm để nghe còi tàu`:`${car.dataset.carName}; ${carriageDescriptions[n]}; bấm để khám phá`);
+    updateCarLabels();
     let start, dragged = false;
     car.addEventListener('pointerdown', event => { start = {x: event.clientX, y: event.clientY}; dragged = false; });
     car.addEventListener('pointermove', event => { if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 15) dragged = true; });
@@ -222,6 +231,7 @@
       car.focus({preventScroll: true});
       showExperienceIntro(n);
     });
+    window.addEventListener('train-language-changed', updateCarLabels);
     car.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showExperienceIntro(n); }
     });

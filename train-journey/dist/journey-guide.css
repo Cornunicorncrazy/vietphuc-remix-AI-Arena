@@ -21,6 +21,3 @@ body:has(.postal-overlay:not([hidden])) .journey-guide-reopen{display:none}
 .train-car.journey-guide-target{filter:drop-shadow(0 0 3px #ffcd79)}
 @media(max-width:760px){.journey-guide-reopen{top:9px;left:9px}.journey-guide-panel{padding:14px 17px 16px}.journey-guide-title{font-size:21px;margin-top:10px}}
 .mobile-landscape .journey-guide-panel{padding:10px 14px}.mobile-landscape .journey-guide-title{font-size:18px;margin:6px 0}.mobile-landscape .journey-guide-body{font-size:10px;line-height:1.5}
-.experience-guide-replay{flex:none;width:32px;height:32px;margin-left:auto;display:grid;place-items:center;border:1px solid var(--theme-border,#9ba88e);border-radius:50%;background:var(--theme-surface,#f3efe3);color:var(--theme-ink,#253c35);font:700 15px 'Be Vietnam Pro',Arial,sans-serif;cursor:pointer}
-.experience-guide-replay[hidden]{display:none}
-.experience-guide-replay:hover{background:color-mix(in srgb,var(--theme-border,#9ba88e) 30%,var(--theme-surface,#f3efe3))}

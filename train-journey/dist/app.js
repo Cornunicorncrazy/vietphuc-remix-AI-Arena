@@ -31,9 +31,10 @@ const carriageSummaries = {
     'Powerful D19E diesel locomotive, the stalwart engine powering Vietnam railway journeys.'
   ]
 };
+const localizedCarriageName = n => window.trainI18n?.language === 'en' ? carriageNamesEn[n] : carriageNames[n];
 for(let n=0;n<total;n++){
   const dot=document.createElement('button');dot.type='button';
-  dot.setAttribute('aria-label',`Đến ${carriageNames[n]}`);
+  dot.setAttribute('aria-label',`${window.trainI18n?.language === 'en' ? 'Go to' : 'Đến'} ${localizedCarriageName(n)}`);
   dot.addEventListener('click',()=>go(n));dots.append(dot);
 }
 function go(n){
@@ -42,13 +43,21 @@ function go(n){
   track.style.transform=`translateX(-${index*100/total}%)`;
   prev.disabled=index===0;next.disabled=index===total-1;
   document.querySelector('#current').textContent=num;
-  document.querySelector('#car-title').textContent=carriageNames[index];
+  document.querySelector('#car-title').textContent=localizedCarriageName(index);
   document.querySelector('#car-code').textContent=index===total-1?'D19E · 946':`VNR · 00${index+1}`;
   const lang = window.trainI18n?.language === 'en' ? 'en' : 'vi';
+  const trainSvg = document.querySelector('#train-track svg');
+  if (trainSvg) trainSvg.setAttribute('aria-label', lang === 'en'
+    ? 'A Vietnamese train with passenger, heritage, postal, art, freight and destination carriages, ending with a locomotive'
+    : 'Đoàn tàu Việt Nam gồm các toa hành khách, di sản, bưu điện, nghệ thuật, chở hàng và các toa điểm đến, kết thúc bằng đầu máy');
   const summaries = carriageSummaries[lang] || carriageSummaries.vi;
   const hintSmall = document.querySelector('.hint small');
   if(hintSmall) hintSmall.textContent = summaries[index];
-  [...dots.children].forEach((d,i)=>{d.disabled=false;d.classList.toggle('active',i===index);d.setAttribute('aria-current',i===index?'step':'false')});
+  const previousLabel = lang === 'en' ? 'Previous carriage' : 'Sang toa trước';
+  const nextLabel = lang === 'en' ? 'Next carriage' : 'Sang toa tiếp theo';
+  prev.setAttribute('aria-label', previousLabel);
+  next.setAttribute('aria-label', nextLabel);
+  [...dots.children].forEach((d,i)=>{d.disabled=false;d.classList.toggle('active',i===index);d.setAttribute('aria-current',i===index?'step':'false');d.setAttribute('aria-label',`${lang === 'en' ? 'Go to' : 'Đến'} ${localizedCarriageName(i)}: ${summaries[i]}`)});
   if(previous!==index)window.dispatchEvent(new CustomEvent('train-navigation',{detail:{direction:index>previous?1:-1,index}}));
 }
 window.addEventListener('train-language-changed', () => go(index));
@@ -100,7 +109,7 @@ function showCarPrompt(n){
   if(!intro||!hoverTitle)return;
   if(activatedCar===n)return;
   hoveredCar=n;
-  const prompt=`Ấn để lên ${carriageNames[n]}`;
+  const prompt=window.trainI18n?.language === 'en' ? `Click to board ${localizedCarriageName(n)}` : `Ấn để lên ${localizedCarriageName(n)}`;
   hoverTitle.textContent=prompt;
   journeyTitle.setAttribute('aria-label',prompt);
   intro.classList.add('is-car-hovered');

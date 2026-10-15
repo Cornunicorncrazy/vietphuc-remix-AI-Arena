@@ -72,7 +72,7 @@
   const overlay=document.createElement('div'); overlay.className='booth-overlay'; overlay.hidden=true;
   overlay.innerHTML='<section class="booth-card" role="dialog" aria-modal="true" aria-labelledby="booth-title"><header class="booth-header"><div><span class="booth-kicker">TOA 02 · HOA PHƯỢNG ĐỎ</span><h2 id="booth-title">Một tấm hình, một nét Việt</h2></div><button class="booth-close" type="button" aria-label="Đóng photobooth"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg></button></header><ol class="booth-steps" aria-label="Các bước photobooth"></ol><div class="booth-body"></div><p class="booth-status" role="status" aria-live="polite"></p></section>';
   journey.append(overlay);
-  const body=overlay.querySelector('.booth-body'), status=overlay.querySelector('.booth-status'), steps=overlay.querySelector('.booth-steps');
+  const boothCard=overlay.querySelector('.booth-card'), body=overlay.querySelector('.booth-body'), status=overlay.querySelector('.booth-status'), steps=overlay.querySelector('.booth-steps');
   let step=0,frame=frames[0],photos=[],outfit=null,sourceId=null,placements=[],adjustments=[],activeSlot=null,stream=null,cameraToken=0,returnFocus,inactive=[],busy=false;
   const titles=['Frame','Ảnh của bạn','Trang phục','Tạo ảnh','Xếp ảnh'];
   const el=(tag,cls,text)=>{const node=document.createElement(tag); if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
@@ -119,9 +119,10 @@
     const filters=el('div','booth-filters');let group='all';const list=el('div','booth-catalogue');
     const fill=()=>{list.replaceChildren();const gender=window.clothingQuizGender||'other';window.clothingQuizData.categories.filter(c=>group==='all'||(group==='ethnic')===['hmong','dao-do','thai','ede'].includes(c.id)).flatMap(c=>window.clothingQuizVisibleVariants(c.id,gender).map(variant=>({c,variant}))).forEach(({c,variant})=>{
       const selected={...c,variantId:variant?.id||null,variantName:variant?.name||null,imageSrc:variant?.src||null,name:variant?.displayName|| (variant?`${c.name} · ${variant.name}`:c.name)};
-      const card=button('',()=>{outfit=selected;render();});card.className='booth-garment';card.setAttribute('aria-label',`Chọn ${selected.name}`);card.setAttribute('aria-pressed',String(outfit?.id===c.id&&outfit?.variantId===selected.variantId));
+      const isSelected=outfit?.id===c.id&&outfit?.variantId===selected.variantId;
+      const card=el('div','booth-garment');const choose=()=>{outfit=selected;render();};card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',`Chọn ${selected.name}`);card.setAttribute('aria-pressed',String(isSelected));card.addEventListener('click',choose);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();choose();}});
       const art=el('div','booth-garment-art');if(variant){const garment=image(variant.src,selected.name);garment.loading='lazy';art.append(garment);}else{art.innerHTML='<svg viewBox="0 0 120 150" aria-hidden="true"><path d="M42 19 60 30 78 19 110 45 94 67 80 58 87 135 33 135 40 58 26 67 10 45Z" fill="currentColor" stroke="#485b48" stroke-width="2"/><path d="M42 19 60 44 78 19M60 44v90M35 115h50" fill="none" stroke="#f3efe3" stroke-width="3"/></svg>';art.append(el('span','','Ảnh trang phục sẽ bổ sung'));}
-      card.append(art,el('strong','',selected.name),el('span','',c.tagline));list.append(card);
+      card.append(art,el('strong','',selected.name),el('span','',c.tagline));if(isSelected){card.classList.add('is-selected');const confirm=button('Xác nhận lựa chọn →',()=>changeStep(3),'booth-garment-confirm');confirm.addEventListener('click',event=>event.stopPropagation());card.append(confirm);}list.append(card);
     });};
     [['all','Tất cả'],['viet','Việt phục & áo bà ba'],['ethnic','Trang phục dân tộc']].forEach(([id,label])=>{const b=button(label,()=>{group=id;[...filters.children].forEach(btn=>btn.setAttribute('aria-pressed',String(btn===b)));fill();});b.setAttribute('aria-pressed',String(id==='all'));filters.append(b);});const gender=window.clothingQuizGender||'other';body.append(note(gender==='male'?'Đang hiển thị mẫu trang phục nam.':gender==='female'?'Đang hiển thị mẫu trang phục nữ.':'Đang hiển thị tất cả mẫu trang phục.'),filters,list);fill();
   }
@@ -238,17 +239,24 @@
       slot.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();activeSlot=index;render();return;}const current=adjustmentFor(index);if(event.key==='+'||event.key==='='){setAdjustment(index,{zoom:clamp(current.zoom*1.1,1,3)});}else if(event.key==='-'){setAdjustment(index,{zoom:clamp(current.zoom/1.1,1,3)});}else if(event.key.startsWith('Arrow')){const axis=event.key==='ArrowLeft'||event.key==='ArrowRight'?'x':'y',direction=event.key==='ArrowLeft'||event.key==='ArrowUp'?-1:1;setAdjustment(index,{[axis]:clamp(current[axis]+direction*.08,-1,1)});}else return;event.preventDefault();paint();});
     }).catch(()=>{status.textContent='Không thể hiển thị ảnh trong ô. Hãy chọn ảnh khác.';});
   }
-  let qrCodeDataUrl=null;
+  let qrCodeDataUrl=null,qrCodeAttempted=false;
   async function getQrCode(){
-    if(qrCodeDataUrl)return qrCodeDataUrl;
+    if(qrCodeAttempted)return qrCodeDataUrl;
+    qrCodeAttempted=true;
     try{
       const siteUrl=window.location.origin+window.location.pathname;
       const res=await fetch(`/api/qrcode?text=${encodeURIComponent(siteUrl)}`);
-      if(res.ok){
-        const data=await res.json();
-        if(data?.dataUrl){qrCodeDataUrl=data.dataUrl;return qrCodeDataUrl;}
+      if(!res.ok){
+        showToast(window.trainI18n?.language==='en'?'The QR code is temporarily unavailable.':'Mã QR tạm thời không khả dụng.');
+        return null;
       }
-    }catch(_){}
+      const data=await res.json();
+      if(data?.dataUrl){qrCodeDataUrl=data.dataUrl;return qrCodeDataUrl;}
+      showToast(window.trainI18n?.language==='en'?'The QR code could not be prepared.':'Không thể chuẩn bị mã QR.');
+    }catch(error){
+      showToast(window.trainI18n?.language==='en'?'The QR code is temporarily unavailable.':'Mã QR tạm thời không khả dụng.');
+      console.error('QR code request failed:',error);
+    }
     return null;
   }
   getQrCode();
@@ -495,11 +503,12 @@
   }
   function render(){
     stopCamera();
+    boothCard.setAttribute('aria-busy',String(busy));
     if(outfit?.variantId&&!window.clothingQuizVisibleVariants(outfit.id,window.clothingQuizGender||'other').some(variant=>variant.id===outfit.variantId)){outfit=null;if(step===3)step=2;}
     body.replaceChildren();steps.replaceChildren();titles.forEach((title,i)=>{const item=el('li','',`${i+1}. ${title}`);if(i===step)item.setAttribute('aria-current','step');steps.append(item);});
     if(step===0){heading('Chọn một khung kỷ niệm','Các frame dưới đây là mẫu giữ chỗ. Frame thiết kế riêng sẽ được bổ sung sau.');const list=el('div','booth-frame-list');frames.forEach(f=>{const card=button('',()=>{if(frame.id!==f.id){placements=[];adjustments=[];activeSlot=null;}frame=f;render();});card.className='booth-frame-option';card.setAttribute('aria-label',`Chọn frame ${f.name}`);card.setAttribute('aria-pressed',String(frame.id===f.id));card.append(miniature(f),el('strong','',f.name),el('span','',f.label));list.append(card);});body.append(list);nav('Tiếp tục →',()=>changeStep(1));}
     if(step===1){heading('Giữ lại một khoảnh khắc','Chọn một ảnh rõ mặt và trang phục hiện tại. Bạn có thể thêm nhiều ảnh để xếp vào frame.');const actions=el('div','booth-source-actions');actions.append(button('Mở camera',startCamera,'booth-button primary'),uploadControl('Tải ảnh lên'));body.append(actions,note('JPG, PNG hoặc WebP · tối đa 12 MB / ảnh · tối đa 12 ảnh. Ảnh được giữ trong phiên này; chỉ gửi để tạo ảnh khi bạn xác nhận.'),el('div','booth-camera'));if(photos.length){body.append(renderPhotos());}nav('Chọn trang phục →',()=>changeStep(2),!selectedPhoto());}
-    if(step===2){heading('Một catalogue, nhiều nét đẹp','Chọn mẫu trang phục dựng lại từ ảnh bạn gửi. Một số chi tiết có thể khác ảnh gốc.');renderCatalogue();nav('Xác nhận lựa chọn →',()=>changeStep(3),!outfit);}
+    if(step===2){heading('Một catalogue, nhiều nét đẹp','Chọn mẫu trang phục dựng lại từ ảnh bạn gửi. Một số chi tiết có thể khác ảnh gốc.');renderCatalogue();body.append(button('← Quay lại ảnh của bạn',()=>changeStep(1),'booth-button secondary booth-catalogue-back'));}
     if(step===3){
       heading('Sẵn sàng cho một diện mạo mới','Ảnh của bạn và mẫu trang phục sẽ được gửi tới dịch vụ tạo ảnh khi kết nối đã sẵn sàng và bạn xác nhận.');
       const summary=el('div','booth-confirmation');const p=selectedPhoto();if(p)summary.append(image(p.url,p.name));
