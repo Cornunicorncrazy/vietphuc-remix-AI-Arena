@@ -62,7 +62,6 @@
     returnFocus?.focus({preventScroll:true});
   }
   function open() {
-    if (!window.trainQuizComplete) return;
     if (overlay.hidden) {
       returnFocus=document.activeElement;
       inactive=[...journey.children].filter(element=>element!==overlay).map(element=>({element,inert:element.inert}));

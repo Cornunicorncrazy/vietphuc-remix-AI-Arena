@@ -3,17 +3,15 @@
   gate.className = 'ticket-gate';
   gate.setAttribute('aria-label', 'Vé tàu Việt Phục');
   gate.innerHTML = `<div class="ticket-gate-inner">
-    <div class="ticket-heading"><span class="ticket-kicker">ĐƯỜNG SẮT VIỆT NAM · MỘT CHUYẾN ĐI QUA THỜI GIAN</span><h1>Vé lên tàu Việt Phục</h1><p>Ghi tên mình lên tấm vé, rồi bắt đầu khám phá đoàn tàu.</p></div>
+    <div class="ticket-heading"><span class="ticket-kicker">ĐƯỜNG SẮT VIỆT NAM · MỘT CHUYẾN ĐI QUA THỜI GIAN</span><h1>Vé lên tàu Việt Phục</h1><p>Ghi tên để lưu vé kỷ niệm, hoặc khám phá đoàn tàu ngay.</p></div>
     <div class="ticket-paper-wrap"><div class="ticket-sheet ticket-bitmap">
       <img class="ticket-paper" src="ticket-generated-v1.png" alt="Vé Tàu Việt Phục trên giấy cổ, với lưu ý hành khách và các ô thông tin theo vé gốc. Ga đi và ga đến: Việt Nam.">
       <input class="ticket-name-on-paper is-empty" id="ticket-name" form="ticket-form" aria-label="Họ và tên hành khách trên vé" name="passenger" type="text" maxlength="42" autocomplete="name" placeholder="Nhập họ và tên" required>
     </div></div>
-    <div class="ticket-actions"><form class="ticket-form" id="ticket-form" hidden><button id="ticket-download" type="button">↓ Tải ảnh vé PNG</button><button class="ticket-enter" type="submit">Lên tàu <span aria-hidden="true">→</span></button></form><p class="ticket-footnote" id="ticket-status" aria-live="polite" hidden>Tấm vé lưu niệm của riêng bạn · Tải về hoặc tiếp tục hành trình</p></div>
+    <div class="ticket-actions"><form class="ticket-form" id="ticket-form" hidden><button id="ticket-download" type="button">↓ Tải ảnh vé PNG</button><button class="ticket-enter" type="submit">Lên tàu <span aria-hidden="true">→</span></button></form><button class="ticket-skip" type="button">Khám phá trước, lấy vé sau</button><p class="ticket-footnote" id="ticket-status" aria-live="polite" hidden>Tấm vé lưu niệm của riêng bạn · Tải về hoặc tiếp tục hành trình</p></div>
   </div>`;
   document.body.append(gate);
   const journey = document.querySelector('.journey');
-  journey.inert = true;
-  journey.setAttribute('aria-hidden', 'true');
   const input = gate.querySelector('#ticket-name');
   const form = gate.querySelector('#ticket-form');
   const status = gate.querySelector('#ticket-status');
@@ -27,6 +25,12 @@
   }
   input.addEventListener('input', updateName);
   window.addEventListener('train-language-changed', updateName);
+  function leaveGate() {
+    window.dispatchEvent(new Event('train-boarded'));
+    gate.classList.add('is-leaving');
+    setTimeout(() => gate.remove(), 520);
+  }
+  gate.querySelector('.ticket-skip').addEventListener('click', leaveGate);
   gate.querySelector('#ticket-download').addEventListener('click', () => {
     if (!form.reportValidity()) return;
     const name = updateName();
@@ -67,10 +71,7 @@
   form.addEventListener('submit', event => {
     event.preventDefault();
     window.trainPassengerName = updateName();
-    window.dispatchEvent(new Event('train-boarded'));
-    gate.classList.add('is-leaving');
-    journey.inert = false;
-    journey.removeAttribute('aria-hidden');
-    setTimeout(() => { gate.remove(); document.querySelector('#next')?.focus({ preventScroll: true }); }, 520);
+    leaveGate();
+    setTimeout(() => document.querySelector('#next')?.focus({ preventScroll: true }), 520);
   });
 })();

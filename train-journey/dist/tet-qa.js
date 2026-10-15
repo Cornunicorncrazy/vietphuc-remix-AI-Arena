@@ -73,6 +73,7 @@
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
           link.textContent = source.title || 'Nguồn tham khảo ↗';
+          link.setAttribute('aria-label', `${link.textContent} · ${window.trainI18n?.language === 'en' ? 'open reference source' : 'mở nguồn tham khảo'}`);
           refs.append(link);
         });
         item.append(refs);

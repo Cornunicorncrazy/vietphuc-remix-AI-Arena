@@ -10,20 +10,20 @@
       reopen: 'Hướng dẫn', skip: 'Bỏ qua', done: 'Xong',
       steps: {
         name: ['1 / 4 · TẤM VÉ CỦA BẠN', 'Ghi tên lên vé', 'Nhấn vào ô tên trên tấm vé và nhập tên của bạn.'],
-        board: ['2 / 4 · LÊN TÀU', 'Bắt đầu hành trình', 'Vé đã có tên. Nhấn “Lên tàu” để vào sân ga. Bạn cũng có thể tải ảnh vé để giữ làm kỷ niệm.'],
-        carriage: ['3 / 4 · TOA ĐẦU TIÊN', 'Khám phá toa đầu tiên', 'Nhấn vào toa tàu đang hiện trước mặt để bắt đầu.'],
-        experience: ['3 / 4 · TOA ĐẦU TIÊN', 'Bắt đầu hoạt động', 'Nhấn “Trải nghiệm hoạt động” để mở bài khám phá trang phục. Hoàn thành bài này để mở các toa tiếp theo.'],
-        explore: ['4 / 4 · ĐI DỌC ĐOÀN TÀU', 'Các toa đã mở', 'Dùng nút mũi tên, phím ← → hoặc vuốt để chuyển toa. Nhấn vào một toa để xem trải nghiệm bên trong.']
+        board: ['2 / 4 · LÊN TÀU', 'Bắt đầu hành trình', 'Nhấn “Lên tàu” để vào sân ga. Bạn cũng có thể bỏ qua vé hoặc tải ảnh vé làm kỷ niệm.'],
+        carriage: ['3 / 4 · KHÁM PHÁ', 'Chọn một toa tàu', 'Bạn có thể bắt đầu ở toa đầu tiên hoặc chọn bất kỳ toa nào để xem chủ đề văn hóa bên trong.'],
+        experience: ['3 / 4 · HOẠT ĐỘNG', 'Bắt đầu hoạt động', 'Chọn hoạt động bạn muốn thử. Bài khám phá trang phục là một lựa chọn, không phải điều kiện để đi tiếp.'],
+        explore: ['4 / 4 · ĐI DỌC ĐOÀN TÀU', 'Tự chọn hành trình', 'Dùng nút mũi tên, phím ← → hoặc vuốt để chuyển toa. Nhấn vào một toa để xem trải nghiệm bên trong.']
       }
     },
     en: {
       reopen: 'Guide', skip: 'Skip', done: 'Done',
       steps: {
         name: ['1 / 4 · YOUR TICKET', 'Add your name', 'Select the name field on the ticket and enter your name.'],
-        board: ['2 / 4 · BOARD THE TRAIN', 'Start your journey', 'Your ticket has a name. Select “Board the train” to enter the platform. You can also download the ticket as a keepsake.'],
-        carriage: ['3 / 4 · FIRST CARRIAGE', 'Explore the first carriage', 'Select the carriage in front of you to begin.'],
-        experience: ['3 / 4 · FIRST CARRIAGE', 'Start the activity', 'Select “Experience the activity” to open the clothing quiz. Finish it to unlock the remaining carriages.'],
-        explore: ['4 / 4 · EXPLORE THE TRAIN', 'The carriages are unlocked', 'Use the arrow buttons, ← → keys, or swipe to change carriages. Select a carriage to explore inside.']
+        board: ['2 / 4 · BOARD THE TRAIN', 'Start your journey', 'Select “Board the train” to enter the platform. You can also skip the ticket or download it as a keepsake.'],
+        carriage: ['3 / 4 · EXPLORE', 'Choose a carriage', 'Start with the first carriage or choose any carriage to explore a cultural topic.'],
+        experience: ['3 / 4 · ACTIVITY', 'Start an activity', 'Choose an activity to try. The clothing quiz is optional and does not block the rest of the journey.'],
+        explore: ['4 / 4 · EXPLORE THE TRAIN', 'Choose your own route', 'Use the arrow buttons, ← → keys, or swipe to change carriages. Select a carriage to explore inside.']
       }
     }
   };

@@ -14,64 +14,64 @@
           num: 'Toa 01',
           code: 'VNR · 001',
           name: 'Toa Hành khách 01',
-          desc: 'Điểm khởi hành của chuyến đi, nơi lưu giữ vẻ đẹp cổ phục Việt Nam qua các triều đại lịch sử.',
-          activity: '✦ Trắc nghiệm Việt phục'
+          desc: 'Bắt đầu bằng việc nhận diện sở thích của bạn để chọn hướng tìm hiểu cổ phục phù hợp.',
+          activity: '✦ Tìm phong cách phù hợp'
         },
         {
           num: 'Toa 02',
           code: 'VNR · 002',
           name: 'Toa Hoa Phượng Đỏ',
-          desc: 'Sắc đỏ Hải Phòng rực rỡ và những hồi ức tươi đẹp của những chuyến tàu phương Bắc thời hoa lửa.',
-          activity: '📷 Buồng ảnh thử trang phục'
+          desc: 'Thử mặc cổ phục trong một trải nghiệm hình ảnh và phân biệt trải nghiệm ảo với cách mặc thực tế.',
+          activity: '📷 Thử mặc qua photobooth'
         },
         {
           num: 'Toa 03',
           code: 'VNR · 003',
           name: 'Toa Bưu điện',
-          desc: 'Không gian bưu chính vàng son, nơi những phong thư tay và con tem di sản kết nối tâm tình người Việt.',
-          activity: '✉ Dán tem & Bưu thiếp xưa'
+          desc: 'Tìm hiểu cách thư từ, con tem và tờ tin có thể kể lại câu chuyện văn hóa về cổ phục.',
+          activity: '✉ Tạo bưu thiếp tìm hiểu'
         },
         {
           num: 'Toa 04',
           code: 'VNR · 004',
           name: 'Toa Tranh Tết',
-          desc: 'Sắc xuân sum vầy với những bức tranh khắc gỗ dân gian Đông Hồ, Hàng Trống thắm đượm hương Tết xưa.',
-          activity: '🏮 Hỏi đáp tranh Tết & AI'
+          desc: 'Dùng hỏi đáp để khám phá tranh Tết, hoa văn và mối liên hệ giữa hình ảnh dân gian với văn hóa mặc.',
+          activity: '🏮 Hỏi đáp tranh Tết'
         },
         {
           num: 'Toa 05',
           code: 'VNR · 005',
           name: 'Toa Chở hàng',
-          desc: 'Toa hàng xanh Ratraco bền bỉ ngày đêm chuyên chở sản vật trù phú dọc dải đất hình chữ S.',
-          activity: '⚙ Khám phá khoang hàng & Cơ khí'
+          desc: 'Tìm hiểu dấu tích và bối cảnh lịch sử của cổ phục qua tư liệu, hiện vật và những điều chưa thể khẳng định.',
+          activity: '⚙ Mở tư liệu lịch sử'
         },
         {
           num: 'Toa 06',
           code: 'VNR · 006',
           name: 'Toa Hành trình Di sản',
-          desc: 'Tôn vinh Cố đô Huế, nhã nhạc cung đình và hoa văn gấm vóc quý tộc thời Nguyễn trang nghiêm.',
-          activity: '🏛 Triển lãm lịch sử di sản'
+          desc: 'Theo dõi sự tiếp nối từ áo ngũ thân đến hôm nay và nhận biết sự khác nhau giữa phục dựng, hiện đại và trình diễn.',
+          activity: '🏛 Triển lãm các thời kỳ'
         },
         {
           num: 'Toa 07',
           code: 'VNR · 007',
           name: 'Toa Hà Nội hai tầng',
-          desc: 'Tái hiện kiến trúc Ô Quan Chưởng rêu phong, ga Hàng Cỏ cổ kính và nét thanh lịch của thủ đô.',
-          activity: '🏙 Ngắm cảnh ga & Phố cổ Hà Nội'
+          desc: 'Khám phá Hồ Hoàn Kiếm như một không gian lịch sử để lựa chọn bối cảnh chụp ảnh cổ phục có ý thức.',
+          activity: '🏙 Khám phá địa điểm chụp'
         },
         {
           num: 'Toa 08',
           code: 'VNR · 008',
           name: 'Toa SJourney',
-          desc: 'Toa du lịch sang trọng phong cách Đông Dương (Indochine) với nội thất gỗ quý và ẩm thực thượng hạng.',
-          activity: '☕ Khoang nghỉ dưỡng Indochine'
+          desc: 'Khám phá cách kết hợp cổ phục với không gian, ánh sáng và nghệ thuật trong một chuyến đi.',
+          activity: '☕ Khám phá không gian & nghệ thuật'
         },
         {
           num: 'Toa 09',
           code: 'VNR · 009',
           name: 'Toa cổ Đà Lạt',
-          desc: 'Ký ức hào hùng của tuyến đường sắt răng cưa Tháp Chàm – Đà Lạt huyền thoại vượt đèo sương mù.',
-          activity: '⛰ Tư liệu đường sắt răng cưa'
+          desc: 'Tìm hiểu ga Đà Lạt như một địa điểm di sản và học cách chụp ảnh phù hợp với không gian cổ.',
+          activity: '⛰ Khám phá địa điểm chụp'
         },
         {
           num: 'Đầu máy',
@@ -96,64 +96,64 @@
           num: 'Coach 01',
           code: 'VNR · 001',
           name: 'Passenger Coach 01',
-          desc: 'The starting point of the voyage, exploring the timeless elegance of Vietnamese historical attire.',
-          activity: '✦ Heritage Clothing Quiz'
+          desc: 'Start by identifying your interests and choosing a direction for exploring traditional Vietnamese clothing.',
+          activity: '✦ Find a clothing direction'
         },
         {
           num: 'Coach 02',
           code: 'VNR · 002',
           name: 'Red Flamboyant Coach',
-          desc: 'Vibrant crimson blooms of Hai Phong and nostalgic memories of the northern railway lines.',
-          activity: '📷 Heritage Photobooth'
+          desc: 'Try traditional clothing through an image experience, while keeping virtual styling distinct from real-world dress practice.',
+          activity: '📷 Try it in the photobooth'
         },
         {
           num: 'Coach 03',
           code: 'VNR · 003',
           name: 'Postal Coach',
-          desc: 'Golden postal carriage preserving vintage handwritten letters, classic stamps, and fond memories.',
-          activity: '✉ Vintage Stamps & Postcards'
+          desc: 'Learn how letters, stamps and a bulletin can carry cultural stories about traditional clothing.',
+          activity: '✉ Create a learning postcard'
         },
         {
           num: 'Coach 04',
           code: 'VNR · 004',
           name: 'Tet Festival Coach',
-          desc: 'Festive springtime colors celebrating traditional Dong Ho and Hang Trong folk woodblock prints.',
-          activity: '🏮 Tet Culture & Folk QA'
+          desc: 'Use guided questions to explore Tết prints, motifs and their links to Vietnamese clothing culture.',
+          activity: '🏮 Tết print questions'
         },
         {
           num: 'Coach 05',
           code: 'VNR · 005',
           name: 'Freight Carriage',
-          desc: 'Rugged Ratraco cargo coach reliably transporting local goods connecting regions across Vietnam.',
-          activity: '⚙ Freight Cargo & Mechanics'
+          desc: 'Study clothing history through sources and objects, while noticing what the surviving evidence cannot prove.',
+          activity: '⚙ Open the history archive'
         },
         {
           num: 'Coach 06',
           code: 'VNR · 006',
           name: 'Heritage Journey Coach',
-          desc: 'Imperial citadel of Hue, royal court music, and aristocratic silk costumes of the Nguyen dynasty.',
-          activity: '🏛 Dynastic History Exhibit'
+          desc: 'Follow clothing from the ngũ thân robe to today, distinguishing reconstruction, modern dress and performance.',
+          activity: '🏛 Periods exhibit'
         },
         {
           num: 'Coach 07',
           code: 'VNR · 007',
           name: 'Hanoi Double-Decker',
-          desc: 'Historic Quan Chuong gate, old Hang Co station, and the enduring charm of Hanoi’s 36 guild streets.',
-          activity: '🏙 Historic Hanoi Station Scenes'
+          desc: 'Explore Hoàn Kiếm Lake as a historic setting and choose a respectful context for a traditional-clothing photo.',
+          activity: '🏙 Explore a photo setting'
         },
         {
           num: 'Coach 08',
           code: 'VNR · 008',
           name: 'SJourney Coach',
-          desc: 'Refined Indochine-style luxury carriage featuring rich timber interiors and aristocratic rail dining.',
-          activity: '☕ Indochine Luxury Interiors'
+          desc: 'Explore how clothing, space, light and art can work together in a travel setting.',
+          activity: '☕ Explore space & art'
         },
         {
           num: 'Coach 09',
           code: 'VNR · 009',
           name: 'Vintage Da Lat Coach',
-          desc: 'Honoring the legendary cogwheel railway climbing through misty pine mountains to Da Lat.',
-          activity: '⛰ Cog Railway Archives'
+          desc: 'Learn about Da Lat station as a heritage setting and choose a photo approach that respects the old space.',
+          activity: '⛰ Explore a photo setting'
         },
         {
           num: 'Locomotive',

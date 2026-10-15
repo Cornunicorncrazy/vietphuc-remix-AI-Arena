@@ -86,7 +86,7 @@
     window.trainI18n?.apply();
   }
   function open(n) {
-    if (!places[n] || !window.trainQuizComplete) return;
+    if (!places[n]) return;
     if (overlay.hidden) {
       returnFocus = document.activeElement;
       inactiveChildren = [...journey.children].filter(child => child !== overlay).map(child => ({child, inert: child.inert}));
