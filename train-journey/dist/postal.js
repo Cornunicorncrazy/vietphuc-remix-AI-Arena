@@ -126,9 +126,9 @@
     const rent=node('p');rent.append('Tại Hà Nội, có thể hỏi mượn Nhật Bình, áo Tấc, Ngũ Thân ở ',link('Tô Hà Style','https://tohastyle.com.vn/'),'; hoặc xem các bộ Việt cổ phục cho thuê tại ',link('V’s Style','https://vietphuc.net/'),'. Nên hỏi trước về mẫu, cỡ áo và lịch nhận trả.');sidebar.append(rent);
     const main=node('section','postal-paper-main');
     main.append(node('p','postal-paper-edition','TỜ TIN VĂN HÓA · SỐ ĐẶC BIỆT'),node('h2','', 'Việt phục lại về giữa phố'),node('p','postal-paper-deck','Từ tà áo nơi cố đô đến nếp váy miền cao, mỗi đường kim mở một câu chuyện để người hôm nay cùng đọc tiếp.'));
-    main.append(node('h3','', 'Tin vừa qua · tin đang chờ'));
-    const past=node('p');past.append('Tuần lễ Áo dài Huế 2026 đã diễn ra từ 3–10 tháng 7; đoàn “Bách Hoa Bộ Hành” đem nhiều dáng Việt phục qua không gian di sản. ',link('Xem tin từ Sở Du lịch Huế','https://huetourism.gov.vn/su-kien/chi-tiet/?pid=MjQxNXxjc2RsZGw1&tuan-le-ao-dai-hue-2026='),'.');main.append(past);
-    const coming=node('p');coming.append('Những cuộc hẹn sau này đang chờ lịch mới. Bạn đọc muốn dự ngày hội áo dài hoặc Việt phục, xin theo dõi ',link('lịch sự kiện của Sở Du lịch Huế','https://huetourism.gov.vn/su-kien/'),' để biết chương trình và ngày đã được công bố.');main.append(coming);
+    main.append(node('h3','', 'Tin từ Bách Hoa Bộ Hành'));
+    const event=node('p');event.append('Ngày 24/11/2026, nhân Ngày Văn hóa Việt Nam, Bách Hoa Bộ Hành cho biết sẽ có một sự kiện dành cho cộng đồng yêu văn hóa và Việt phục. ',link('Xem bài đăng về sự kiện','https://web.facebook.com/share/p/1HVYxWhjUA/'),'.');main.append(event);
+    const follow=node('p');follow.append('Thông tin về chương trình, thời gian và địa điểm sẽ được cập nhật trên ',link('trang Bách Hoa Bộ Hành','https://web.facebook.com/bachhoabohanh/?locale=vi_VN&_rdc=11&_rdr'),' khi được công bố.');main.append(follow);
     top.append(sidebar,main);
     const bottom=node('div','postal-paper-bottom');
     const locations=node('section');locations.append(node('h3','', 'Theo dấu một tấm hình'));
