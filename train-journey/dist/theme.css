@@ -39,6 +39,8 @@ body{background:var(--theme-paper);color:var(--theme-ink)}
 :is(.booth-close,.clothing-quiz-close,.interior-close){color:var(--theme-ink);border-color:var(--theme-border)}
 :is(.booth-button:hover:enabled,.clothing-quiz-answer:hover,.train-audio-toggle:hover,.interior-close:hover,.clothing-quiz-close:hover){background:color-mix(in srgb,var(--theme-border) 32%,var(--theme-surface))}
 .booth-button.primary:hover:enabled{background:color-mix(in srgb,var(--theme-ink) 88%,var(--theme-border));color:var(--theme-surface)}
+:root[data-theme=dark] .booth-garment-confirm{background:var(--theme-surface);color:var(--theme-ink);border-color:var(--theme-accent);box-shadow:0 3px 10px color-mix(in srgb,var(--theme-ink) 25%,transparent)}
+:root[data-theme=dark] .booth-garment-confirm:hover{background:var(--theme-paper);color:var(--theme-ink)}
 .arrow{border-color:var(--theme-border)}
 .ticket-form .ticket-enter{background:#9f4538;color:#fff8e9}.ticket-name-on-paper{color:#365d69}.ticket-bitmap .ticket-name-on-paper::placeholder{color:#7b635ba0}
 .site-controls{position:fixed;top:18px;right:18px;z-index:215;display:inline-flex;align-items:center;gap:7px;padding:4px 6px;border-radius:28px;background:color-mix(in srgb,var(--theme-surface,#f3efe3) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--theme-border,#b8c0aa);box-shadow:0 4px 14px color-mix(in srgb,var(--theme-ink,#253c35) 12%,transparent);pointer-events:auto;transition:transform .25s ease,opacity .25s ease}

@@ -83,8 +83,37 @@
   function changeStep(n){stopCamera();step=n;if(n!==4)activeSlot=null;status.textContent='';render();overlay.querySelector('.booth-card').scrollTop=0;body.querySelector('h3')?.focus({preventScroll:true});}
   function heading(title,description){const h=el('h3','',title);h.tabIndex=-1;body.append(h,note(description));}
   function nav(nextText,nextFn,disabled=false){const row=el('div','booth-actions');if(step>0)row.append(button('← Quay lại',()=>changeStep(step-1),'booth-button secondary'));const next=button(nextText,nextFn,'booth-button primary');next.disabled=disabled;row.append(next);body.append(row);}
-  function miniature(f){const p=el('div','booth-mini-frame');p.style.aspectRatio=`${f.w}/${f.h}`;p.style.background=f.color;f.slots.forEach((s,i)=>{const slot=el('span','',String(i+1));Object.assign(slot.style,{left:s[0]*100+'%',top:s[1]*100+'%',width:s[2]*100+'%',height:s[3]*100+'%'});p.append(slot);});return p;}
+  function miniature(f){const p=el('div','booth-mini-frame');p.style.aspectRatio=`${f.w}/${f.h}`;p.style.background=f.color||'transparent';f.slots.forEach((s,i)=>{const slot=el('span','',String(i+1));Object.assign(slot.style,{left:s[0]*100+'%',top:s[1]*100+'%',width:s[2]*100+'%',height:s[3]*100+'%'});p.append(slot);});if(f.overlayUrl){const overlayImage=image(f.overlayUrl,`${f.name} overlay`);overlayImage.className='booth-mini-frame-overlay';p.append(overlayImage);}return p;}
   function image(url,alt){const img=el('img');img.src=url;img.alt=alt;return img;}
+  function setFrame(next){if(frame.custom&&frame.overlayUrl&&frame.overlayUrl!==next.overlayUrl)URL.revokeObjectURL(frame.overlayUrl);frame=next;placements=[];adjustments=[];activeSlot=null;}
+  async function detectFrameSlots(img){
+    const maxSize=900,scale=Math.min(1,maxSize/Math.max(img.width,img.height)),width=Math.max(1,Math.round(img.width*scale)),height=Math.max(1,Math.round(img.height*scale));
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,width,height);
+    const pixels=ctx.getImageData(0,0,width,height).data,transparent=new Uint8Array(width*height),visited=new Uint8Array(width*height),queue=[];
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++)transparent[y*width+x]=pixels[(y*width+x)*4+3]<40?1:0;
+    const markOutside=(x,y)=>{const index=y*width+x;if(!transparent[index]||visited[index])return;visited[index]=1;queue.push(index);};
+    for(let x=0;x<width;x++){markOutside(x,0);markOutside(x,height-1);}
+    for(let y=0;y<height;y++){markOutside(0,y);markOutside(width-1,y);}
+    for(let cursor=0;cursor<queue.length;cursor++){const index=queue[cursor],x=index%width,y=Math.floor(index/width);if(x>0)markOutside(x-1,y);if(x<width-1)markOutside(x+1,y);if(y>0)markOutside(x,y-1);if(y<height-1)markOutside(x,y+1);}
+    const slots=[];
+    for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){const start=y*width+x;if(!transparent[start]||visited[start])continue;let minX=x,maxX=x,minY=y,maxY=y,size=0;queue.length=0;queue.push(start);visited[start]=1;for(let cursor=0;cursor<queue.length;cursor++){const index=queue[cursor],px=index%width,py=Math.floor(index/width);size++;minX=Math.min(minX,px);maxX=Math.max(maxX,px);minY=Math.min(minY,py);maxY=Math.max(maxY,py);if(px>0&&!visited[index-1]&&transparent[index-1]){visited[index-1]=1;queue.push(index-1);}if(px<width-1&&!visited[index+1]&&transparent[index+1]){visited[index+1]=1;queue.push(index+1);}if(py>0&&!visited[index-width]&&transparent[index-width]){visited[index-width]=1;queue.push(index-width);}if(py<height-1&&!visited[index+width]&&transparent[index+width]){visited[index+width]=1;queue.push(index+width);}}const slotWidth=maxX-minX+1,slotHeight=maxY-minY+1;if(size>=width*height*.004&&slotWidth>=width*.08&&slotHeight>=height*.08&&size<=width*height*.8)slots.push([minX/width,minY/height,slotWidth/width,slotHeight/height]);}
+    return slots.sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
+  }
+  async function importFrame(file){
+    if(!file)return;
+    if(file.type!=='image/png'||file.size>12*1024*1024){status.textContent='Frame phải là PNG trong suốt, tối đa 12 MB.';return;}
+    const url=URL.createObjectURL(file);
+    try{
+      const img=await loadImage(url);
+      if(img.width<600||img.height<600||img.width*img.height>16000000)throw Error('Kích thước frame cần từ 600 px trở lên và không quá 16 megapixel.');
+      const slots=await detectFrameSlots(img);
+      if(slots.length<1||slots.length>8)throw Error('Không nhận diện được số ô ảnh phù hợp. Hãy kiểm tra lại các vùng trong suốt khép kín.');
+      setFrame({id:`custom-${crypto.randomUUID()}`,name:file.name.replace(/\.[^.]+$/,'')||'Frame của bạn',label:`${slots.length} ảnh · PNG trong suốt`,w:img.width,h:img.height,slots,color:'transparent',custom:true,overlayUrl:url});
+      status.textContent=`Đã nhận frame với ${slots.length} ô ảnh.`;
+      render();
+    }catch(error){URL.revokeObjectURL(url);status.textContent=error.message||'Không thể đọc frame. Hãy thử một file PNG khác.';}
+  }
+  function uploadFrameControl(){const wrap=el('label','booth-upload','Tải frame PNG');const input=el('input');input.type='file';input.accept='image/png';input.setAttribute('aria-label','Tải frame PNG của bạn');input.addEventListener('change',()=>{importFrame(input.files?.[0]);input.value='';});wrap.append(input);return wrap;}
   function selectedPhoto(){return photos.find(p=>p.id===sourceId);}
   function addPhoto(blob,kind='original'){
     if(photos.length>=12){status.textContent='Bộ ảnh đã có 12 ảnh. Hãy xóa bớt ảnh trước khi thêm.';return;}
@@ -267,7 +296,7 @@
     setTimeout(()=>{toast.classList.remove('visible');setTimeout(()=>toast.remove(),400);},3000);
   }
   function renderComposition(){
-    const layout=el('div','booth-layout'),preview=el('div','booth-frame-preview');preview.style.aspectRatio=`${frame.w}/${frame.h}`;preview.style.background=frame.color;
+    const layout=el('div','booth-layout'),preview=el('div','booth-frame-preview');preview.style.aspectRatio=`${frame.w}/${frame.h}`;preview.style.background=frame.color||'transparent';
     frame.slots.forEach((s,i)=>{
       const slot=el('div','booth-frame-slot');Object.assign(slot.style,{left:s[0]*100+'%',top:s[1]*100+'%',width:s[2]*100+'%',height:s[3]*100+'%'});slot.dataset.slotIndex=i;slot.tabIndex=0;slot.setAttribute('role','button');
       const p=photos.find(p=>p.id===placements[i]);
@@ -281,7 +310,8 @@
       }
       preview.append(slot);
     });
-    preview.append(el('div','booth-frame-title','VIỆT PHỤC · KỶ NIỆM TRÊN TÀU'));
+    if(frame.overlayUrl){const frameOverlay=image(frame.overlayUrl,`${frame.name} overlay`);frameOverlay.className='booth-frame-overlay';preview.append(frameOverlay);}
+    if(!frame.custom)preview.append(el('div','booth-frame-title','VIỆT PHỤC · KỶ NIỆM TRÊN TÀU'));
     const qrBadge=el('div','booth-frame-qr');
     qrBadge.setAttribute('aria-label','Mã QR chuyến tàu: Quét để lên tàu');
     getQrCode().then(url=>{
@@ -292,7 +322,7 @@
         qrBadge.append(qrImg,qrTexts);
       }
     });
-    preview.append(qrBadge);
+    if(!frame.custom)preview.append(qrBadge);
 
     const choices=el('div','booth-slot-choices');
     const adjustBanner=el('div','booth-adjust-banner');
@@ -304,7 +334,9 @@
     bItem1.innerHTML='<strong>🖐 Di chuyển vị trí:</strong> Nhấn giữ và kéo ảnh trong ô để chọn góc ưng ý nhất.';
     const bItem2=el('div','booth-adjust-banner-item');
     bItem2.innerHTML='<strong>🔍 Chỉnh kích cỡ:</strong> Cuộn chuột, chụm 2 ngón tay hoặc bấm phím <strong>+</strong> / <strong>-</strong> để phóng to / thu nhỏ.';
-    bGrid.append(bItem1,bItem2);
+    const bItem3=el('div','booth-adjust-banner-item');
+    bItem3.innerHTML='<strong>📌 Chọn ảnh:</strong> Ấn vào ô để chọn ảnh cho ô đó.';
+    bGrid.append(bItem1,bItem2,bItem3);
     adjustBanner.append(bHeader,bGrid);
     choices.append(adjustBanner);
 
@@ -375,17 +407,18 @@
     layout.append(preview,choices);body.append(layout);
   }
   async function generateFrameExport(){
-    const c=document.createElement('canvas');c.width=frame.w;c.height=frame.h;const ctx=c.getContext('2d');ctx.fillStyle=frame.color;ctx.fillRect(0,0,c.width,c.height);
+    const c=document.createElement('canvas');c.width=frame.w;c.height=frame.h;const ctx=c.getContext('2d');if(frame.color&&frame.color!=='transparent'){ctx.fillStyle=frame.color;ctx.fillRect(0,0,c.width,c.height);}
     for(let i=0;i<frame.slots.length;i++){
       const p=photos.find(p=>p.id===placements[i]);if(!p)throw Error('Hãy chọn ảnh cho tất cả các ô.');
       const img=await loadImage(p.url);const [x,y,w,h]=frame.slots[i].map((v,j)=>v*(j%2===0?frame.w:frame.h));
       const crop=imageCrop(img,w,h,adjustmentFor(i));ctx.drawImage(img,crop.x,crop.y,crop.sw,crop.sh,x,y,w,h);
     }
-    ctx.fillStyle='#354b3e';ctx.textAlign='center';ctx.font=`${Math.round(frame.w*.022)}px Cambria, 'Times New Roman', serif`;
-    ctx.fillText(window.trainI18n?.t('VIỆT PHỤC · KỶ NIỆM TRÊN TÀU') || 'VIỆT PHỤC · KỶ NIỆM TRÊN TÀU',frame.w/2,frame.h*.976);
+    if(frame.overlayUrl){const frameOverlay=await loadImage(frame.overlayUrl);ctx.drawImage(frameOverlay,0,0,frame.w,frame.h);}
+    if(!frame.custom){ctx.fillStyle='#354b3e';ctx.textAlign='center';ctx.font=`${Math.round(frame.w*.022)}px Cambria, 'Times New Roman', serif`;
+    ctx.fillText(window.trainI18n?.t('VIỆT PHỤC · KỶ NIỆM TRÊN TÀU') || 'VIỆT PHỤC · KỶ NIỆM TRÊN TÀU',frame.w/2,frame.h*.976);}
     try{
       const qrUrl=await getQrCode();
-      if(qrUrl){
+      if(qrUrl&&!frame.custom){
         const qrImg=await loadImage(qrUrl);
         const qrDim=Math.round(frame.w*0.075);
         const p=Math.max(6,Math.round(frame.w*0.008));
@@ -506,7 +539,7 @@
     boothCard.setAttribute('aria-busy',String(busy));
     if(outfit?.variantId&&!window.clothingQuizVisibleVariants(outfit.id,window.clothingQuizGender||'other').some(variant=>variant.id===outfit.variantId)){outfit=null;if(step===3)step=2;}
     body.replaceChildren();steps.replaceChildren();titles.forEach((title,i)=>{const item=el('li','',`${i+1}. ${title}`);if(i===step)item.setAttribute('aria-current','step');steps.append(item);});
-    if(step===0){heading('Chọn một khung kỷ niệm','Các frame dưới đây là mẫu giữ chỗ. Frame thiết kế riêng sẽ được bổ sung sau.');const list=el('div','booth-frame-list');frames.forEach(f=>{const card=button('',()=>{if(frame.id!==f.id){placements=[];adjustments=[];activeSlot=null;}frame=f;render();});card.className='booth-frame-option';card.setAttribute('aria-label',`Chọn frame ${f.name}`);card.setAttribute('aria-pressed',String(frame.id===f.id));card.append(miniature(f),el('strong','',f.name),el('span','',f.label));list.append(card);});body.append(list);nav('Tiếp tục →',()=>changeStep(1));}
+    if(step===0){heading('Chọn một khung kỷ niệm','Chọn frame có sẵn hoặc tải thiết kế của bạn. Với frame riêng, ảnh PNG cần có các ô ảnh trong suốt được khép kín để app tự nhận diện.');const guide=el('div','booth-frame-guide');guide.append(el('strong','', 'Cách thiết kế frame riêng'),el('span','', '• PNG có nền trong suốt, tối thiểu 600 × 600 px · tối đa 12 MB'),el('span','', '• Mỗi ô ảnh là một vùng trong suốt khép kín, có viền/hoạ tiết bao quanh'),el('span','', '• Không đặt chữ, logo hoặc hoạ tiết lên vùng ảnh; có thể thiết kế tối đa 8 ô'),el('span','', '• Xuất đúng kích thước cuối cùng, không dùng JPG vì JPG không giữ được độ trong suốt'));const frameUpload=el('div','booth-frame-upload');frameUpload.append(uploadFrameControl(),el('span','booth-upload-hint','Khuyên dùng Canva, Figma hoặc Photoshop · xuất PNG trong suốt'));body.append(guide,frameUpload);const list=el('div','booth-frame-list');frames.forEach(f=>{const card=button('',()=>{if(frame.id!==f.id)setFrame(f);else render();});card.className='booth-frame-option';card.setAttribute('aria-label',`Chọn frame ${f.name}`);card.setAttribute('aria-pressed',String(frame.id===f.id));card.append(miniature(f),el('strong','',f.name),el('span','',f.label));list.append(card);});if(frame.custom){const card=button('',()=>render());card.className='booth-frame-option custom-selected';card.setAttribute('aria-label',`Frame đã tải lên: ${frame.name}`);card.setAttribute('aria-pressed','true');card.append(miniature(frame),el('strong','',frame.name),el('span','',frame.label));list.prepend(card);}body.append(list);nav('Tiếp tục →',()=>changeStep(1));}
     if(step===1){heading('Giữ lại một khoảnh khắc','Chọn một ảnh rõ mặt và trang phục hiện tại. Bạn có thể thêm nhiều ảnh để xếp vào frame.');const actions=el('div','booth-source-actions');actions.append(button('Mở camera',startCamera,'booth-button primary'),uploadControl('Tải ảnh lên'));body.append(actions,note('JPG, PNG hoặc WebP · tối đa 12 MB / ảnh · tối đa 12 ảnh. Ảnh được giữ trong phiên này; chỉ gửi để tạo ảnh khi bạn xác nhận.'),el('div','booth-camera'));if(photos.length){body.append(renderPhotos());}nav('Chọn trang phục →',()=>changeStep(2),!selectedPhoto());}
     if(step===2){heading('Một catalogue, nhiều nét đẹp','Chọn mẫu trang phục dựng lại từ ảnh bạn gửi. Một số chi tiết có thể khác ảnh gốc.');renderCatalogue();body.append(button('← Quay lại ảnh của bạn',()=>changeStep(1),'booth-button secondary booth-catalogue-back'));}
     if(step===3){
